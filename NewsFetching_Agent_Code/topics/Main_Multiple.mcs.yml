@@ -1,0 +1,234 @@
+mcs.metadata:
+  componentName: Main_Multiple
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - feeds 2
+
+  actions:
+    - kind: HttpRequestAction
+      id: http_g1a
+      url: https://www.stheadline.com/rss
+      response: Topic.g1a
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g1b
+      url: https://www.i-cable.com/rss
+      response: Topic.g1b
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g1c
+      url: https://www.scmp.com/rss/91/feed/
+      response: Topic.g1c
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g1raw
+      variable: Topic.G1Raw
+      value: =Topic.g1a & Topic.g1b & Topic.g1c
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g1
+      input:
+        binding:
+          response: =Topic.G1Raw
+
+      output:
+        binding:
+          predictionOutput: Topic.G1Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: HttpRequestAction
+      id: http_g2a
+      url: https://www.bastillepost.com/hongkong/feed
+      response: Topic.g2a
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g2b
+      url: https://www.etnet.com.hk/www/tc/news/rss.php?section=editor&fid=538467
+      response: Topic.g2b
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g2c
+      url: https://orientaldaily.on.cc/rss/news.xml
+      response: Topic.g2c
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g2raw
+      variable: Topic.G2Raw
+      value: =Topic.g2a & Topic.g2b & Topic.g2c
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g2
+      input:
+        binding:
+          response: =Topic.G2Raw
+
+      output:
+        binding:
+          predictionOutput: Topic.G2Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: HttpRequestAction
+      id: http_g3a
+      url: https://hk.finance.yahoo.com/rss/
+      headers:
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36
+
+      response: Topic.g3a
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g3b
+      url: https://www.ft.com/rss/home/international
+      response: Topic.g3b
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g3c
+      url: https://www.cnbc.com/id/19832390/device/rss/rss.html
+      headers:
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36
+
+      response: Topic.g3c
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g3d
+      url: https://fintechnews.hk/feed/
+      response: Topic.g3d
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g3raw
+      variable: Topic.G3Raw
+      value: =Topic.g3a & Topic.g3b & Topic.g3c & Topic.g3d
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g3
+      input:
+        binding:
+          response: =Topic.G3Raw
+
+      output:
+        binding:
+          predictionOutput: Topic.G3Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: HttpRequestAction
+      id: http_g4a
+      url: https://news.google.com/rss/search?q=site%3Amingpao.com%20OR%20site%3Ahkej.com%20OR%20site%3Ahk01.com%20OR%20site%3Arthk.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a
+      responseSchema: String
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a
+      input:
+        binding:
+          response: =Topic.g4a
+
+      output:
+        binding:
+          predictionOutput: Topic.G4aParsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: HttpRequestAction
+      id: http_g4b
+      url: https://news.google.com/rss/search?q=site%3Atvb.com%20OR%20site%3Awenweipo.com%20OR%20site%3Aam730.com.hk%20OR%20site%3Ahkcd.com.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4b
+      responseSchema: String
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4b
+      input:
+        binding:
+          response: =Topic.g4b
+
+      output:
+        binding:
+          predictionOutput: Topic.G4bParsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: HttpRequestAction
+      id: http_g4c
+      url: https://news.google.com/rss/search?q=site%3Aaastocks.com%20OR%20site%3Anow.com%20OR%20site%3Aquamnet.com%20OR%20site%3Athestandard.com.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4c
+      responseSchema: String
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4c
+      input:
+        binding:
+          response: =Topic.g4c
+
+      output:
+        binding:
+          predictionOutput: Topic.G4cParsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: HttpRequestAction
+      id: http_g4d
+      url: https://news.google.com/rss/search?q=site%3Areuters.com%20OR%20site%3Awsj.com%20OR%20site%3Ahket.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4d
+      responseSchema: String
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4d
+      input:
+        binding:
+          response: =Topic.g4d
+
+      output:
+        binding:
+          predictionOutput: Topic.G4dParsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SetVariable
+      id: set_allparsed
+      variable: Topic.AllParsed
+      value: |-
+        =Topic.G1Parsed.text & Char(10) &
+        Topic.G2Parsed.text & Char(10) &
+        Topic.G3Parsed.text & Char(10) &
+        Topic.G4aParsed.text & Char(10) &
+        Topic.G4bParsed.text & Char(10) &
+        Topic.G4cParsed.text & Char(10) &
+        Topic.G4dParsed.text
+
+    - kind: SendActivity
+      id: debug_allparsed
+      activity: "LEN: {Len(Topic.AllParsed)}"
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_all
+      input:
+        binding:
+          result: =Topic.AllParsed
+
+      output:
+        binding:
+          predictionOutput: Topic.Classified
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: send_result
+      activity: "{Topic.Classified.text}"
+
+inputType: {}
+outputType: {}

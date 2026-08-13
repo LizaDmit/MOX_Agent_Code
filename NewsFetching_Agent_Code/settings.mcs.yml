@@ -1,0 +1,23 @@
+﻿displayName: Test_News_Fetching
+schemaName: cr921_TestNewsFetching
+accessControlPolicy: GroupMembership
+authenticationMode: Integrated
+authenticationTrigger: Always
+configuration:
+  settings:
+    GenerativeActionsEnabled: false
+
+  isAgentConnectable: false
+  gPTSettings:
+    defaultSchemaName: cr921_TestNewsFetching.gpt.default
+
+  aISettings:
+    useModelKnowledge: true
+    isFileAnalysisEnabled: false
+    isSemanticSearchEnabled: true
+    contentModeration: Low
+    optInUseLatestModels: false
+
+publishedOn: 2026-08-12T03:19:39.0000000Z
+template: default-2.1.0
+language: 1033

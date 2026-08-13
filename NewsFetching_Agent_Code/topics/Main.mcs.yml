@@ -1,0 +1,47 @@
+mcs.metadata:
+  componentName: Main_Single
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - test feed
+
+  actions:
+    - kind: HttpRequestAction
+      id: v4uRLO
+      url: https://www.bastillepost.com/hongkong/rss
+      response: Topic.response
+      responseSchema: String
+
+    - kind: InvokeAIBuilderModelAction
+      id: invokeAIBuilderModelAction_4baXkA
+      input:
+        binding:
+          response: =Topic.response
+
+      output:
+        binding:
+          predictionOutput: Topic.result
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: invokeAIBuilderModelAction_FTHtWn
+      input:
+        binding:
+          result: =Topic.result.text
+
+      output:
+        binding:
+          predictionOutput: Topic.sortedResult
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: sendActivity_9W9Py4
+      activity: "{Topic.sortedResult.text}"
+
+inputType: {}
+outputType: {}

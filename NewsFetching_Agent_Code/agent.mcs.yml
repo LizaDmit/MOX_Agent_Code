@@ -1,0 +1,13 @@
+mcs.metadata:
+  componentName: Test_News_Fetching
+kind: GptComponentMetadata
+instructions:
+responseInstructions:
+gptCapabilities:
+  webBrowsing: false
+  codeInterpreter: false
+
+aISettings:
+  model: {}
+  extensionData:
+    lastUsedCustomModel: {}
