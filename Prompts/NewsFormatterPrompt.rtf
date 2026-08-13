@@ -9,15 +9,53 @@
 \f0\fs24 \cf0 \expnd0\expndtw0\kerning0
 \outl0\strokewidth0 \strokec2 The input   contains several RSS documents joined together.\
 Extract every <item> from all of them.\
-Output one line per item, pipe-delimited:\
+\
+Output one line per item, pipe-delimited, in this exact format:\
 HEADLINE | OUTLET | PUBDATE | LINK\
 \
-Derive OUTLET from the <title> of the enclosing <channel>.\
-Use <title>, <pubDate>, <link> only. Ignore <description> and <content:encoded>.\
-If a headline describes graphic violence, death, or injury, replace the\
-headline text with: [FILTERED - <outlet> - <link>]\
-Keep the line so downstream counting is unaffected.\
-Skip items older than 24 hours.\
-Strip zero-width and invisible characters. ASCII URLs only.\
-No commentary, no numbering.\
+FIELD RULES\
+\
+HEADLINE - from <title>. Copy exactly. Do not translate, shorten or rewrite.\
+\
+OUTLET - normally the <title> of the enclosing <channel>.\
+EXCEPTION: if the channel is Google News, the channel title is not the outlet.\
+Use the <source> element inside the <item> instead. Never output "Google News"\
+as an outlet.\
+\
+PUBDATE - from <pubDate>. Copy exactly, including the timezone offset.\
+\
+LINK - from <link>. Copy exactly. Do not shorten, resolve or rewrite. URLs may\
+contain non-ASCII characters and must be preserved as they appear.\
+Remove any zero-width or invisible characters immediately before or after the\
+URL. There must be no whitespace or invisible characters between :: and the URL\
+or at the end of the line.\
+\
+Use <title>, <pubDate>, <link> and <source> only.\
+Ignore <description> and <content:encoded> entirely.\
+\
+TIME WINDOW\
+\
+You will receive a second input named  , a Hong Kong time in the format\
+yyyy-mm-dd hh:mm.\
+\
+Convert each item's PUBDATE to Hong Kong time (UTC+8) before comparing.\
+Incoming offsets vary: +0800 is already Hong Kong time, +0000 and GMT need\
+8 hours added.\
+\
+Output a line ONLY for items whose PUBDATE is at or after the cutoff.\
+Items older than the cutoff produce no output at all.\
+If no item is within the window, output exactly: NONE\
+\
+GRAPHIC CONTENT\
+\
+If a headline mentions death, dying, suicide, self-harm, killing, murder,\
+stabbing, shooting, attack, casualties, accident, injury or abuse, output\
+NOTHING for that item. No line, no placeholder, no marker. Skip it silently.\
+When in any doubt, skip.\
+\
+PROHIBITIONS\
+\
+No commentary, no preamble, no numbering, no totals, no counts.\
+Do not omit items. Do not summarise or abbreviate the list.\
+Do not merge or reorder items.\
 }
