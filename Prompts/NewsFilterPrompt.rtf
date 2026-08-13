@@ -1,0 +1,39 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2869
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Client: MOX (Hong Kong virtual bank). Work with the output  \
+\
+KEEP if the headline mentions any of:\
+- Cat1: MOX, MOX Bank, \uc0\u30526 \u23433 \u37504 \u34892  competitors by name\
+- Cat2: virtual bank, \uc0\u34395 \u25836 \u37504 \u34892 , digital bank, ZA Bank, WeLab Bank,\
+  livi bank, Fusion Bank, Ant Bank, Airstar Bank, PAObank\
+- Cat3: HKMA, \uc0\u37329 \u31649 \u23616 , banking licence, deposit rates, retail banking\
+  regulation, fintech policy Hong Kong, stablecoin licensing\
+\
+DROP everything else, including:\
+- General equity market moves and index levels\
+- Entertainment, sport, lifestyle, celebrity\
+- History, opinion, human interest\
+- International news with no HK banking angle\
+\
+Matching is case-insensitive and works in both English and Chinese.\
+If uncertain, DROP and flag as BORDERLINE.\
+\
+Output ONLY lines classified KEEP, one per line:\
+KEEP | HEADLINE | OUTLET | LINK | 10-word reason\
+\
+Do not output DROP lines.\
+After the KEEP lines, output one final line:\
+TOTAL: <number evaluated> | KEPT: <number> | DROPPED: <number>\
+\
+You must evaluate every input line. Never summarise or abbreviate.\
+Never write phrases like "the rest are DROP".\
+\
+Do not invent items. Do not alter headlines.\
+}

@@ -1,0 +1,28 @@
+﻿outlet,method,feed_url,items,content,note
+am730,Google News fallback,https://news.google.com/rss/search?q=site%3Aam730.com.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+AASTOCKS,Google News fallback,https://news.google.com/rss/search?q=site%3Aaastocks.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,75,headline + link only,check Google News ToS with Gareth
+Bastille Post,native RSS,https://www.bastillepost.com/hongkong/rss,10,full text,
+ET Net,native RSS,https://www.etnet.com.hk/www/tc/news/rss.php?section=editor&fid=538467,20,headline + snippet,
+Fintech News HK,native RSS,https://fintechnews.hk/rss,10,full text,
+HK01,Google News fallback,https://news.google.com/rss/search?q=site%3Ahk01.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+HKCD,Google News fallback,https://news.google.com/rss/search?q=site%3Ahkcd.com.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+HKEJ,Google News fallback,https://news.google.com/rss/search?q=site%3Ahkej.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+HKET,native RSS,https://www.hket.com/rss/finance,5,headline + snippet,
+i-Cable,native RSS,https://www.i-cable.com/rss,100,headline + snippet,
+Infocast,none,,0,,no feed - needs licensed source or alert email
+Ming Pao,Google News fallback,https://news.google.com/rss/search?q=site%3Amingpao.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+Now Finance,Google News fallback,https://news.google.com/rss/search?q=site%3Anow.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+Quamnet,Google News fallback,https://news.google.com/rss/search?q=site%3Aquamnet.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+Oriental Daily,native RSS,https://orientaldaily.on.cc/rss/news.xml,20,headline + snippet,
+RTHK,Google News fallback,https://news.google.com/rss/search?q=site%3Arthk.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+Sing Tao,native RSS,https://www.stheadline.com/rss,100,headline + snippet,
+TVB,Google News fallback,https://news.google.com/rss/search?q=site%3Atvb.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+Wen Wei Po,Google News fallback,https://news.google.com/rss/search?q=site%3Awenweipo.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,100,headline + link only,check Google News ToS with Gareth
+Yahoo Finance HK,native RSS,https://hk.finance.yahoo.com/rss/,50,headline + snippet,
+SCMP,native RSS,https://www.scmp.com/rss/news.xml,50,headline + snippet,
+The Standard,none,,0,,no feed - needs licensed source or alert email
+CNBC,none,,0,,no feed - needs licensed source or alert email
+Financial Times,native RSS,https://www.ft.com/rss/,10,headline + snippet,
+Reuters,Google News fallback,https://news.google.com/rss/search?q=site%3Areuters.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,5,headline + link only,check Google News ToS with Gareth
+Bloomberg,none,,0,,no feed - needs licensed source or alert email
+WSJ,Google News fallback,https://news.google.com/rss/search?q=site%3Awsj.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant,32,headline + link only,check Google News ToS with Gareth
