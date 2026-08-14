@@ -9,6 +9,15 @@ beginDialog:
       - feeds 3
 
   actions:
+    - kind: SetVariable
+      id: set_cutoff
+      variable: Topic.Cutoff
+      value: =Text(DateAdd(Now(), -1, TimeUnit.Days), "yyyy-mm-dd hh:mm")
+
+    - kind: SendActivity
+      id: dbg_cutoff
+      activity: "CUTOFF: {Topic.Cutoff}"
+
     - kind: HttpRequestAction
       id: http_g1a
       url: https://www.stheadline.com/rss
@@ -32,10 +41,15 @@ beginDialog:
       variable: Topic.G1Raw
       value: =Topic.g1a & Topic.g1b & Topic.g1c
 
+    - kind: SendActivity
+      id: dbg_p1
+      activity: P1 START raw={Len(Topic.G1Raw)}
+
     - kind: InvokeAIBuilderModelAction
       id: parse_g1
       input:
         binding:
+          cutoff: =Topic.Cutoff
           response: =Topic.G1Raw
 
       output:
@@ -43,6 +57,30 @@ beginDialog:
           predictionOutput: Topic.G1Parsed
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p1_text
+      activity: "P1 TEXT: {Left(Topic.G1Parsed.text, 800)}"
+
+    - kind: SendActivity
+      id: dbg_p1_done
+      activity: P1 OK parsed={Len(Topic.G1Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g1
+      input:
+        binding:
+          result: =Topic.G1Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C1
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c1_done
+      activity: "C1 OK: {Topic.C1.text}"
 
     - kind: HttpRequestAction
       id: http_g2a
@@ -67,10 +105,15 @@ beginDialog:
       variable: Topic.G2Raw
       value: =Topic.g2a & Topic.g2b & Topic.g2c
 
+    - kind: SendActivity
+      id: dbg_p2
+      activity: P2 START raw={Len(Topic.G2Raw)}
+
     - kind: InvokeAIBuilderModelAction
       id: parse_g2
       input:
         binding:
+          cutoff: =Topic.Cutoff
           response: =Topic.G2Raw
 
       output:
@@ -78,6 +121,26 @@ beginDialog:
           predictionOutput: Topic.G2Parsed
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p2_done
+      activity: P2 OK parsed={Len(Topic.G2Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g2
+      input:
+        binding:
+          result: =Topic.G2Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C2
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c2_done
+      activity: "C2 OK: {Topic.C2.text}"
 
     - kind: HttpRequestAction
       id: http_g3a
@@ -114,10 +177,15 @@ beginDialog:
       variable: Topic.G3Raw
       value: =Topic.g3a & Topic.g3b & Topic.g3c & Topic.g3d
 
+    - kind: SendActivity
+      id: dbg_p3
+      activity: P3 START raw={Len(Topic.G3Raw)}
+
     - kind: InvokeAIBuilderModelAction
       id: parse_g3
       input:
         binding:
+          cutoff: =Topic.Cutoff
           response: =Topic.G3Raw
 
       output:
@@ -126,23 +194,197 @@ beginDialog:
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
 
-    - kind: HttpRequestAction
-      id: http_g4a
-      url: https://news.google.com/rss/search?q=site%3Amingpao.com%20OR%20site%3Ahkej.com%20OR%20site%3Ahk01.com%20OR%20site%3Arthk.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
-      response: Topic.g4a
-      responseSchema: String
+    - kind: SendActivity
+      id: dbg_p3_done
+      activity: P3 OK parsed={Len(Topic.G3Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
-      id: parse_g4a
+      id: classify_g3
       input:
         binding:
-          response: =Topic.g4a
+          result: =Topic.G3Parsed.text
 
       output:
         binding:
-          predictionOutput: Topic.G4aParsed
+          predictionOutput: Topic.C3
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c3_done
+      activity: "C3 OK: {Topic.C3.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4a1
+      url: https://news.google.com/rss/search?q=site%3Amingpao.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a1
+      responseSchema: String
+
+    - kind: SendActivity
+      id: dbg_p4a1
+      activity: P4A1 START raw={Len(Topic.g4a1)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a1
+      input:
+        binding:
+          cutoff: =Topic.Cutoff
+          response: =Topic.g4a1
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a1Parsed
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p4a1_done
+      activity: P4A1 OK parsed={Len(Topic.G4a1Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4a1
+      input:
+        binding:
+          result: =Topic.G4a1Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4a1
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4a1_done
+      activity: "C4A1 OK: {Topic.C4a1.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4a2
+      url: https://news.google.com/rss/search?q=site%3Ahkej.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a2
+      responseSchema: String
+
+    - kind: SendActivity
+      id: dbg_p4a2
+      activity: P4A2 START raw={Len(Topic.g4a2)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a2
+      input:
+        binding:
+          cutoff: =Topic.Cutoff
+          response: =Topic.g4a2
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a2Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p4a2_done
+      activity: P4A2 OK parsed={Len(Topic.G4a2Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4a2
+      input:
+        binding:
+          result: =Topic.G4a2Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4a2
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4a2_done
+      activity: "C4A2 OK: {Topic.C4a2.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4a3
+      url: https://news.google.com/rss/search?q=site%3Ahk01.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a3
+      responseSchema: String
+
+    - kind: SendActivity
+      id: dbg_p4a3
+      activity: P4A3 START raw={Len(Topic.g4a3)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a3
+      input:
+        binding:
+          cutoff: =Topic.Cutoff
+          response: =Topic.g4a3
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a3Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p4a3_done
+      activity: P4A3 OK parsed={Len(Topic.G4a3Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4a3
+      input:
+        binding:
+          result: =Topic.G4a3Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4a3
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4a3_done
+      activity: "C4A3 OK: {Topic.C4a3.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4a4
+      url: https://news.google.com/rss/search?q=site%3Arthk.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a4
+      responseSchema: String
+
+    - kind: SendActivity
+      id: dbg_p4a4
+      activity: P4A4 START raw={Len(Topic.g4a4)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a4
+      input:
+        binding:
+          cutoff: =Topic.Cutoff
+          response: =Topic.g4a4
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a4Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p4a4_done
+      activity: P4A4 OK parsed={Len(Topic.G4a4Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4a4
+      input:
+        binding:
+          result: =Topic.G4a4Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4a4
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4a4_done
+      activity: "C4A4 OK: {Topic.C4a4.text}"
 
     - kind: HttpRequestAction
       id: http_g4b
@@ -150,10 +392,15 @@ beginDialog:
       response: Topic.g4b
       responseSchema: String
 
+    - kind: SendActivity
+      id: dbg_p4b
+      activity: P4B START raw={Len(Topic.g4b)}
+
     - kind: InvokeAIBuilderModelAction
       id: parse_g4b
       input:
         binding:
+          cutoff: =Topic.Cutoff
           response: =Topic.g4b
 
       output:
@@ -162,16 +409,41 @@ beginDialog:
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
 
+    - kind: SendActivity
+      id: dbg_p4b_done
+      activity: P4B OK parsed={Len(Topic.G4bParsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4b
+      input:
+        binding:
+          result: =Topic.G4bParsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4b
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4b_done
+      activity: "C4B OK: {Topic.C4b.text}"
+
     - kind: HttpRequestAction
       id: http_g4c
       url: https://news.google.com/rss/search?q=site%3Aaastocks.com%20OR%20site%3Anow.com%20OR%20site%3Aquamnet.com%20OR%20site%3Athestandard.com.hk%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
       response: Topic.g4c
       responseSchema: String
 
+    - kind: SendActivity
+      id: dbg_p4c
+      activity: P4C START raw={Len(Topic.g4c)}
+
     - kind: InvokeAIBuilderModelAction
       id: parse_g4c
       input:
         binding:
+          cutoff: =Topic.Cutoff
           response: =Topic.g4c
 
       output:
@@ -180,61 +452,150 @@ beginDialog:
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
 
-    - kind: HttpRequestAction
-      id: http_g4d
-      url: https://news.google.com/rss/search?q=site%3Areuters.com%20OR%20site%3Awsj.com%20OR%20site%3Ahket.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
-      response: Topic.g4d
-      responseSchema: String
-
-    - kind: InvokeAIBuilderModelAction
-      id: parse_g4d
-      input:
-        binding:
-          response: =Topic.g4d
-
-      output:
-        binding:
-          predictionOutput: Topic.G4dParsed
-
-      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
-
-    - kind: SetVariable
-      id: set_allparsed
-      variable: Topic.AllParsed
-      value: |-
-        =Topic.G1Parsed.text & Char(10) &
-        Topic.G2Parsed.text & Char(10) &
-        Topic.G3Parsed.text & Char(10) &
-        Topic.G4aParsed.text & Char(10) &
-        Topic.G4bParsed.text & Char(10) &
-        Topic.G4cParsed.text & Char(10) &
-        Topic.G4dParsed.text
-
     - kind: SendActivity
-      id: debug_allparsed
-      activity: "PARSED LEN: {Len(Topic.AllParsed)}"
+      id: dbg_p4c_done
+      activity: P4C OK parsed={Len(Topic.G4cParsed.text)}
 
     - kind: InvokeAIBuilderModelAction
-      id: classify_all
+      id: classify_g4c
       input:
         binding:
-          result: =Topic.AllParsed
+          result: =Topic.G4cParsed.text
 
       output:
         binding:
-          predictionOutput: Topic.Classified
+          predictionOutput: Topic.C4c
 
       aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
 
     - kind: SendActivity
-      id: debug_classified
-      activity: "CLASSIFIED LEN: {Len(Topic.Classified.text)}"
+      id: dbg_c4c_done
+      activity: "C4C OK: {Topic.C4c.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4d1
+      url: https://news.google.com/rss/search?q=site%3Areuters.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4d1
+      responseSchema: String
+
+    - kind: SendActivity
+      id: dbg_p4d1
+      activity: P4D1 START raw={Len(Topic.g4d1)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4d1
+      input:
+        binding:
+          cutoff: =Topic.Cutoff
+          response: =Topic.g4d1
+
+      output:
+        binding:
+          predictionOutput: Topic.G4d1Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p4d1_done
+      activity: P4D1 OK parsed={Len(Topic.G4d1Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4d1
+      input:
+        binding:
+          result: =Topic.G4d1Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4d1
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4d1_done
+      activity: "C4D1 OK: {Topic.C4d1.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4d2
+      url: https://news.google.com/rss/search?q=site%3Awsj.com%20OR%20site%3Ahket.com%20when%3A1d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4d2
+      responseSchema: String
+
+    - kind: SendActivity
+      id: dbg_p4d2
+      activity: P4D2 START raw={Len(Topic.g4d2)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4d2
+      input:
+        binding:
+          cutoff: =Topic.Cutoff
+          response: =Topic.g4d2
+
+      output:
+        binding:
+          predictionOutput: Topic.G4d2Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p4d2_done
+      activity: P4D2 OK parsed={Len(Topic.G4d2Parsed.text)}
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4d2
+      input:
+        binding:
+          result: =Topic.G4d2Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4d2
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4d2_done
+      activity: "C4D2 OK: {Topic.C4d2.text}"
+
+    - kind: SetVariable
+      id: set_shortlist_raw
+      variable: Topic.ShortlistRaw
+      value: |-
+        =Topic.C1.text & Char(10) &
+        Topic.C2.text & Char(10) &
+        Topic.C3.text & Char(10) &
+        Topic.C4a1.text & Char(10) &
+        Topic.C4a2.text & Char(10) &
+        Topic.C4a3.text & Char(10) &
+        Topic.C4a4.text & Char(10) &
+        Topic.C4b.text & Char(10) &
+        Topic.C4c.text & Char(10) &
+        Topic.C4d1.text & Char(10) &
+        Topic.C4d2.text
+
+    - kind: SetVariable
+      id: set_shortlist
+      variable: Topic.Shortlist
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.ShortlistRaw, Char(10)),
+            !StartsWith(Value, "DROP") And !IsBlank(Value)
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: debug_shortlist
+      activity: "SHORTLIST LEN: {Len(Topic.Shortlist)}"
 
     - kind: InvokeAIBuilderModelAction
       id: sort_all
       input:
         binding:
-          Input: =Topic.Classified.text
+          Input: =Topic.Shortlist
 
       output:
         binding:

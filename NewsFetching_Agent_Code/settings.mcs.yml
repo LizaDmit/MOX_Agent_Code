@@ -4,13 +4,20 @@ accessControlPolicy: GroupMembership
 authenticationMode: Integrated
 authenticationTrigger: Always
 configuration:
+  channels:
+    - channelId: MsTeams
+
+    - channelId: Microsoft365Copilot
+
   settings:
     GenerativeActionsEnabled: false
 
   isAgentConnectable: false
+  publishOnImport: true
   gPTSettings:
     defaultSchemaName: cr921_TestNewsFetching.gpt.default
 
+  isLightweightBot: false
   aISettings:
     useModelKnowledge: true
     isFileAnalysisEnabled: false
@@ -18,6 +25,8 @@ configuration:
     contentModeration: Low
     optInUseLatestModels: false
 
-publishedOn: 2026-08-12T03:19:39.0000000Z
+  deferredProvisioning: false
+
+publishedOn: 2026-08-13T09:39:07.0000000Z
 template: default-2.1.0
 language: 1033
