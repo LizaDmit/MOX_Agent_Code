@@ -1,0 +1,675 @@
+mcs.metadata:
+  componentName: Main_NoDebug
+kind: AdaptiveDialog
+beginDialog:
+  kind: OnRecognizedIntent
+  id: main
+  intent:
+    triggerQueries:
+      - mox news
+
+  actions:
+    - kind: SetVariable
+      id: set_window_end
+      variable: Topic.WindowEnd
+      value: =Text(DateAdd(Today(), 570, TimeUnit.Minutes), "yyyy-mm-dd hh:mm")
+
+    - kind: SetVariable
+      id: set_window_start
+      variable: Topic.WindowStart
+      value: |-
+        =Text(
+          DateAdd(
+            DateAdd(Today(), 570, TimeUnit.Minutes),
+            If(Weekday(Today()) = 2, -3, -1),
+            TimeUnit.Days
+          ),
+          "yyyy-mm-dd hh:mm"
+        )
+
+    - kind: SetVariable
+      id: set_window_start_num
+      variable: Topic.WindowStartNum
+      value: =Value(Substitute(Substitute(Substitute(Topic.WindowStart, "-", ""), ":", ""), " ", ""))
+
+    - kind: SetVariable
+      id: set_window_end_num
+      variable: Topic.WindowEndNum
+      value: =Value(Substitute(Substitute(Substitute(Topic.WindowEnd, "-", ""), ":", ""), " ", ""))
+
+    - kind: SendActivity
+      id: hb_1
+      activity: Fetching Hong Kong news feeds. This takes several minutes.
+
+    - kind: HttpRequestAction
+      id: http_g1a
+      url: https://www.stheadline.com/rss
+      response: Topic.g1a
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g1b
+      url: https://www.i-cable.com/rss
+      response: Topic.g1b
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g1c
+      url: https://www.scmp.com/rss/91/feed/
+      response: Topic.g1c
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g1raw
+      variable: Topic.G1Raw
+      value: =Topic.g1a & Topic.g1b & Topic.g1c
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g1
+      input:
+        binding:
+          response: =Topic.G1Raw
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G1Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g1
+      input:
+        binding:
+          result: =Topic.G1Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C1
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g2a
+      url: https://www.bastillepost.com/hongkong/feed
+      response: Topic.g2a
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g2b
+      url: https://www.etnet.com.hk/www/tc/news/rss.php?section=editor&fid=538467
+      response: Topic.g2b
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g2c
+      url: https://orientaldaily.on.cc/rss/news.xml
+      response: Topic.g2c
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g2raw
+      variable: Topic.G2Raw
+      value: =Topic.g2a & Topic.g2b & Topic.g2c
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g2
+      input:
+        binding:
+          response: =Topic.G2Raw
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G2Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g2
+      input:
+        binding:
+          result: =Topic.G2Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C2
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g3a
+      url: https://hk.finance.yahoo.com/rss/
+      headers:
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36
+
+      response: Topic.g3a
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g3b
+      url: https://www.ft.com/rss/home/international
+      response: Topic.g3b
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g3c
+      url: https://www.cnbc.com/id/19832390/device/rss/rss.html
+      headers:
+        User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36
+
+      response: Topic.g3c
+      responseSchema: String
+
+    - kind: HttpRequestAction
+      id: http_g3d
+      url: https://fintechnews.hk/feed/
+      response: Topic.g3d
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g3raw
+      variable: Topic.G3Raw
+      value: =Topic.g3a & Topic.g3b & Topic.g3c & Topic.g3d
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g3
+      input:
+        binding:
+          response: =Topic.G3Raw
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G3Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g3
+      input:
+        binding:
+          result: =Topic.G3Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C3
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: hb_2
+      activity: Reading Chinese-language outlets.
+
+    - kind: HttpRequestAction
+      id: http_g4a1
+      url: https://news.google.com/rss/search?q=site%3Amingpao.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a1
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4a1_slim
+      variable: Topic.g4a1slim
+      value: |-
+        =First(Split(Topic.g4a1, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a1, "<description>"),
+            CountRows(Split(Topic.g4a1, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4a1_halfa
+      variable: Topic.g4a1halfA
+      value: |-
+        =First(Split(Topic.g4a1slim, "<item>")).Value &
+        Concat(
+          FirstN(
+            LastN(
+              Split(Topic.g4a1slim, "<item>"),
+              CountRows(Split(Topic.g4a1slim, "<item>")) - 1
+            ),
+            RoundUp((CountRows(Split(Topic.g4a1slim, "<item>")) - 1) / 2, 0)
+          ),
+          "<item>" & ThisRecord.Value,
+          ""
+        ) & "</channel></rss>"
+
+    - kind: SetVariable
+      id: set_g4a1_halfb
+      variable: Topic.g4a1halfB
+      value: |-
+        =First(Split(Topic.g4a1slim, "<item>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a1slim, "<item>"),
+            (CountRows(Split(Topic.g4a1slim, "<item>")) - 1)
+              - RoundUp((CountRows(Split(Topic.g4a1slim, "<item>")) - 1) / 2, 0)
+          ),
+          "<item>" & ThisRecord.Value,
+          ""
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a1a
+      input:
+        binding:
+          response: =Topic.g4a1halfA
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a1ParsedA
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a1b
+      input:
+        binding:
+          response: =Topic.g4a1halfB
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a1ParsedB
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SetVariable
+      id: set_g4a1_parsedtext
+      variable: Topic.G4a1ParsedText
+      value: |-
+        =If(Trim(Topic.G4a1ParsedA.text) = "NONE", "", Topic.G4a1ParsedA.text) &
+        Char(10) &
+        If(Trim(Topic.G4a1ParsedB.text) = "NONE", "", Topic.G4a1ParsedB.text)
+
+    - kind: SetVariable
+      id: set_g4a1_parsedtext_guard
+      variable: Topic.G4a1ParsedText
+      value: =If(IsBlank(Trim(Topic.G4a1ParsedText)), "NONE", Topic.G4a1ParsedText)
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4a1
+      input:
+        binding:
+          result: =Topic.G4a1ParsedText
+
+      output:
+        binding:
+          predictionOutput: Topic.C4a1
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4a2
+      url: https://news.google.com/rss/search?q=site%3Ahkej.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a2
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4a2_slim
+      variable: Topic.g4a2slim
+      value: |-
+        =First(Split(Topic.g4a2, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a2, "<description>"),
+            CountRows(Split(Topic.g4a2, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a2
+      input:
+        binding:
+          response: =Topic.g4a2slim
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a2Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4a2
+      input:
+        binding:
+          result: =Topic.G4a2Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4a2
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4a4
+      url: https://news.google.com/rss/search?q=site%3Arthk.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4a4
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4a4_slim
+      variable: Topic.g4a4slim
+      value: |-
+        =First(Split(Topic.g4a4, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a4, "<description>"),
+            CountRows(Split(Topic.g4a4, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a4
+      input:
+        binding:
+          response: =Topic.g4a4slim
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a4Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4a4
+      input:
+        binding:
+          result: =Topic.G4a4Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4a4
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4b
+      url: https://news.google.com/rss/search?q=site%3Atvb.com%20OR%20site%3Awenweipo.com%20OR%20site%3Aam730.com.hk%20OR%20site%3Ahkcd.com.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4b
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4b_slim
+      variable: Topic.g4bslim
+      value: |-
+        =First(Split(Topic.g4b, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4b, "<description>"),
+            CountRows(Split(Topic.g4b, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4b
+      input:
+        binding:
+          response: =Topic.g4bslim
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4bParsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4b
+      input:
+        binding:
+          result: =Topic.G4bParsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4b
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4c
+      url: https://news.google.com/rss/search?q=site%3Aaastocks.com%20OR%20site%3Anow.com%20OR%20site%3Aquamnet.com%20OR%20site%3Athestandard.com.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4c
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4c_slim
+      variable: Topic.g4cslim
+      value: |-
+        =First(Split(Topic.g4c, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4c, "<description>"),
+            CountRows(Split(Topic.g4c, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4c
+      input:
+        binding:
+          response: =Topic.g4cslim
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4cParsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4c
+      input:
+        binding:
+          result: =Topic.G4cParsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4c
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: hb_3
+      activity: Reading international outlets.
+
+    - kind: HttpRequestAction
+      id: http_g4d1
+      url: https://news.google.com/rss/search?q=site%3Areuters.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4d1
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4d1_slim
+      variable: Topic.g4d1slim
+      value: |-
+        =First(Split(Topic.g4d1, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4d1, "<description>"),
+            CountRows(Split(Topic.g4d1, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4d1
+      input:
+        binding:
+          response: =Topic.g4d1slim
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4d1Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4d1
+      input:
+        binding:
+          result: =Topic.G4d1Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4d1
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4d2
+      url: https://news.google.com/rss/search?q=site%3Awsj.com%20OR%20site%3Ahket.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4d2
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4d2_slim
+      variable: Topic.g4d2slim
+      value: |-
+        =First(Split(Topic.g4d2, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4d2, "<description>"),
+            CountRows(Split(Topic.g4d2, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4d2
+      input:
+        binding:
+          response: =Topic.g4d2slim
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4d2Parsed
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4d2
+      input:
+        binding:
+          result: =Topic.G4d2Parsed.text
+
+      output:
+        binding:
+          predictionOutput: Topic.C4d2
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: hb_4
+      activity: Applying the time window and sorting results.
+
+    - kind: SetVariable
+      id: set_shortlist_raw
+      variable: Topic.ShortlistRaw
+      value: |-
+        =Topic.C1.text & Char(10) &
+        Topic.C2.text & Char(10) &
+        Topic.C3.text & Char(10) &
+        Topic.C4a1.text & Char(10) &
+        Topic.C4a2.text & Char(10) &
+        Topic.C4a4.text & Char(10) &
+        Topic.C4b.text & Char(10) &
+        Topic.C4c.text & Char(10) &
+        Topic.C4d1.text & Char(10) &
+        Topic.C4d2.text
+
+    - kind: SetVariable
+      id: set_shortlist_prewindow
+      variable: Topic.ShortlistPreWindow
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.ShortlistRaw, Char(10)),
+            !StartsWith(Value, "DROP") And !IsBlank(Value)
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SetVariable
+      id: set_shortlist
+      variable: Topic.Shortlist
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.ShortlistPreWindow, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 5
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 4)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 4)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: sort_all
+      input:
+        binding:
+          Input: =Topic.Shortlist
+
+      output:
+        binding:
+          predictionOutput: Topic.Sorted
+
+      aIModelId: 8429492a-ed4c-498f-a53e-9315f15949da
+
+    - kind: SendActivity
+      id: send_result
+      activity: "{Topic.Sorted.text}"
+
+inputType: {}
+outputType: {}
