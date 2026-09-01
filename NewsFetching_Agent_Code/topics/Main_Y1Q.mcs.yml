@@ -6,7 +6,7 @@ beginDialog:
   id: main
   intent:
     triggerQueries:
-      - mox
+      - test
 
   actions:
     - kind: SetVariable
@@ -256,33 +256,92 @@ beginDialog:
           ""
         )
 
+    - kind: SetVariable
+      id: set_g4a1_halfa
+      variable: Topic.g4a1halfA
+      value: |-
+        =First(Split(Topic.g4a1slim, "<item>")).Value &
+        Concat(
+          FirstN(
+            LastN(
+              Split(Topic.g4a1slim, "<item>"),
+              CountRows(Split(Topic.g4a1slim, "<item>")) - 1
+            ),
+            RoundUp((CountRows(Split(Topic.g4a1slim, "<item>")) - 1) / 2, 0)
+          ),
+          "<item>" & ThisRecord.Value,
+          ""
+        ) & "</channel></rss>"
+
+    - kind: SetVariable
+      id: set_g4a1_halfb
+      variable: Topic.g4a1halfB
+      value: |-
+        =First(Split(Topic.g4a1slim, "<item>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a1slim, "<item>"),
+            (CountRows(Split(Topic.g4a1slim, "<item>")) - 1)
+              - RoundUp((CountRows(Split(Topic.g4a1slim, "<item>")) - 1) / 2, 0)
+          ),
+          "<item>" & ThisRecord.Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4a1
-      activity: P4A1 START raw={Len(Topic.g4a1)} slim={Len(Topic.g4a1slim)}
+      activity: P4A1 START raw={Len(Topic.g4a1)} slim={Len(Topic.g4a1slim)} items={CountRows(Split(Topic.g4a1slim, "<item>")) - 1} halfA={Len(Topic.g4a1halfA)} halfB={Len(Topic.g4a1halfB)}
 
     - kind: InvokeAIBuilderModelAction
-      id: parse_g4a1
+      id: parse_g4a1a
       input:
         binding:
-          response: =Topic.g4a1slim
+          response: =Topic.g4a1halfA
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
       output:
         binding:
-          predictionOutput: Topic.G4a1Parsed
+          predictionOutput: Topic.G4a1ParsedA
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
 
+    - kind: InvokeAIBuilderModelAction
+      id: parse_g4a1b
+      input:
+        binding:
+          response: =Topic.g4a1halfB
+          windowend: =Topic.WindowEnd
+          windowstart_20: =Topic.WindowStart
+
+      output:
+        binding:
+          predictionOutput: Topic.G4a1ParsedB
+
+      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SetVariable
+      id: set_g4a1_parsedtext
+      variable: Topic.G4a1ParsedText
+      value: |-
+        =If(Trim(Topic.G4a1ParsedA.text) = "NONE", "", Topic.G4a1ParsedA.text) &
+        Char(10) &
+        If(Trim(Topic.G4a1ParsedB.text) = "NONE", "", Topic.G4a1ParsedB.text)
+
+    - kind: SetVariable
+      id: set_g4a1_parsedtext_guard
+      variable: Topic.G4a1ParsedText
+      value: =If(IsBlank(Trim(Topic.G4a1ParsedText)), "NONE", Topic.G4a1ParsedText)
+
     - kind: SendActivity
       id: dbg_p4a1_done
-      activity: P4A1 OK in={CountRows(Split(Topic.g4a1slim, "<item>")) - 1} out={CountRows(Split(Topic.G4a1Parsed.text, Char(10)))} chars={Len(Topic.G4a1Parsed.text)}
+      activity: P4A1 OK in={CountRows(Split(Topic.g4a1slim, "<item>")) - 1} outA={CountRows(Split(Topic.G4a1ParsedA.text, Char(10)))} outB={CountRows(Split(Topic.G4a1ParsedB.text, Char(10)))} charsA={Len(Topic.G4a1ParsedA.text)} charsB={Len(Topic.G4a1ParsedB.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a1
       input:
         binding:
-          result: =Topic.G4a1Parsed.text
+          result: =Topic.G4a1ParsedText
 
       output:
         binding:
@@ -550,6 +609,79 @@ beginDialog:
           ""
         )
 
+    - kind: SetVariable
+      id: set_g4d1_fx
+      variable: Topic.G4d1Fx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4d1slim, "<item>"),
+                    CountRows(Split(Topic.g4d1slim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
     - kind: SendActivity
       id: dbg_p4d1
       activity: P4D1 START raw={Len(Topic.g4d1)} slim={Len(Topic.g4d1slim)}
@@ -567,6 +699,18 @@ beginDialog:
           predictionOutput: Topic.G4d1Parsed
 
       aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
+
+    - kind: SendActivity
+      id: dbg_p4d1_fx
+      activity: P4D1 FX lines={CountRows(Split(Topic.G4d1Fx, Char(10)))} chars={Len(Topic.G4d1Fx)}
+
+    - kind: SendActivity
+      id: dbg_p4d1_fx_head
+      activity: "P4D1 FX OUT: {Left(Topic.G4d1Fx, 3500)}"
+
+    - kind: SendActivity
+      id: dbg_p4d1_llm_head
+      activity: "P4D1 LLM OUT: {Left(Topic.G4d1Parsed.text, 3500)}"
 
     - kind: SendActivity
       id: dbg_p4d1_done
