@@ -1,12 +1,12 @@
 mcs.metadata:
-  componentName: MainDebug
+  componentName: Main
 kind: AdaptiveDialog
 beginDialog:
   kind: OnRecognizedIntent
   id: main
   intent:
     triggerQueries:
-      - feeds 3
+      - mox
 
   actions:
     - kind: SetVariable
@@ -27,9 +27,19 @@ beginDialog:
           "yyyy-mm-dd hh:mm"
         )
 
+    - kind: SetVariable
+      id: set_window_start_num
+      variable: Topic.WindowStartNum
+      value: =Value(Substitute(Substitute(Substitute(Topic.WindowStart, "-", ""), ":", ""), " ", ""))
+
+    - kind: SetVariable
+      id: set_window_end_num
+      variable: Topic.WindowEndNum
+      value: =Value(Substitute(Substitute(Substitute(Topic.WindowEnd, "-", ""), ":", ""), " ", ""))
+
     - kind: SendActivity
       id: dbg_window
-      activity: "WINDOW: {Topic.WindowStart} to {Topic.WindowEnd}"
+      activity: "WINDOW: {Topic.WindowStart} to {Topic.WindowEnd} | NUM: {Topic.WindowStartNum} to {Topic.WindowEndNum}"
 
     - kind: HttpRequestAction
       id: http_g1a
@@ -74,7 +84,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p1_done
-      activity: P1 OK parsed={Len(Topic.G1Parsed.text)}
+      activity: P1 OK in={CountRows(Split(Topic.G1Raw, "<item>")) - 1} out={CountRows(Split(Topic.G1Parsed.text, Char(10)))} chars={Len(Topic.G1Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g1
@@ -135,7 +145,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p2_done
-      activity: P2 OK parsed={Len(Topic.G2Parsed.text)}
+      activity: P2 OK in={CountRows(Split(Topic.G2Raw, "<item>")) - 1} out={CountRows(Split(Topic.G2Parsed.text, Char(10)))} chars={Len(Topic.G2Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g2
@@ -208,7 +218,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p3_done
-      activity: P3 OK parsed={Len(Topic.G3Parsed.text)}
+      activity: P3 OK in={CountRows(Split(Topic.G3Raw, "<item>")) - 1} out={CountRows(Split(Topic.G3Parsed.text, Char(10)))} chars={Len(Topic.G3Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g3
@@ -232,15 +242,29 @@ beginDialog:
       response: Topic.g4a1
       responseSchema: String
 
+    - kind: SetVariable
+      id: set_g4a1_slim
+      variable: Topic.g4a1slim
+      value: |-
+        =First(Split(Topic.g4a1, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a1, "<description>"),
+            CountRows(Split(Topic.g4a1, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4a1
-      activity: P4A1 START raw={Len(Topic.g4a1)}
+      activity: P4A1 START raw={Len(Topic.g4a1)} slim={Len(Topic.g4a1slim)}
 
     - kind: InvokeAIBuilderModelAction
       id: parse_g4a1
       input:
         binding:
-          response: =Topic.g4a1
+          response: =Topic.g4a1slim
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
@@ -252,7 +276,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p4a1_done
-      activity: P4A1 OK parsed={Len(Topic.G4a1Parsed.text)}
+      activity: P4A1 OK in={CountRows(Split(Topic.g4a1slim, "<item>")) - 1} out={CountRows(Split(Topic.G4a1Parsed.text, Char(10)))} chars={Len(Topic.G4a1Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a1
@@ -276,15 +300,33 @@ beginDialog:
       response: Topic.g4a2
       responseSchema: String
 
+    - kind: SetVariable
+      id: set_g4a2_slim
+      variable: Topic.g4a2slim
+      value: |-
+        =First(Split(Topic.g4a2, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a2, "<description>"),
+            CountRows(Split(Topic.g4a2, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4a2
-      activity: P4A2 START raw={Len(Topic.g4a2)}
+      activity: P4A2 START raw={Len(Topic.g4a2)} slim={Len(Topic.g4a2slim)}
+
+    - kind: SendActivity
+      id: dbg_p4a2_dump
+      activity: "P4A2 SLIM HEAD: {Substitute(Substitute(Left(Topic.g4a2slim, 1500), \"<\", \"[\"), \">\", \"]\")}"
 
     - kind: InvokeAIBuilderModelAction
       id: parse_g4a2
       input:
         binding:
-          response: =Topic.g4a2
+          response: =Topic.g4a2slim
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
@@ -296,7 +338,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p4a2_done
-      activity: P4A2 OK parsed={Len(Topic.G4a2Parsed.text)}
+      activity: P4A2 OK in={CountRows(Split(Topic.g4a2slim, "<item>")) - 1} out={CountRows(Split(Topic.G4a2Parsed.text, Char(10)))} chars={Len(Topic.G4a2Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a2
@@ -315,64 +357,34 @@ beginDialog:
       activity: "C4A2 OK: {Topic.C4a2.text}"
 
     - kind: HttpRequestAction
-      id: http_g4a3
-      url: https://news.google.com/rss/search?q=site%3Ahk01.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
-      response: Topic.g4a3
-      responseSchema: String
-
-    - kind: SendActivity
-      id: dbg_p4a3
-      activity: P4A3 START raw={Len(Topic.g4a3)}
-
-    - kind: InvokeAIBuilderModelAction
-      id: parse_g4a3
-      input:
-        binding:
-          response: =Topic.g4a3
-          windowend: =Topic.WindowEnd
-          windowstart_20: =Topic.WindowStart
-
-      output:
-        binding:
-          predictionOutput: Topic.G4a3Parsed
-
-      aIModelId: 906ed583-6e73-4704-bbb9-41a86807a784
-
-    - kind: SendActivity
-      id: dbg_p4a3_done
-      activity: P4A3 OK parsed={Len(Topic.G4a3Parsed.text)}
-
-    - kind: InvokeAIBuilderModelAction
-      id: classify_g4a3
-      input:
-        binding:
-          result: =Topic.G4a3Parsed.text
-
-      output:
-        binding:
-          predictionOutput: Topic.C4a3
-
-      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
-
-    - kind: SendActivity
-      id: dbg_c4a3_done
-      activity: "C4A3 OK: {Topic.C4a3.text}"
-
-    - kind: HttpRequestAction
       id: http_g4a4
       url: https://news.google.com/rss/search?q=site%3Arthk.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
       response: Topic.g4a4
       responseSchema: String
 
+    - kind: SetVariable
+      id: set_g4a4_slim
+      variable: Topic.g4a4slim
+      value: |-
+        =First(Split(Topic.g4a4, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4a4, "<description>"),
+            CountRows(Split(Topic.g4a4, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4a4
-      activity: P4A4 START raw={Len(Topic.g4a4)}
+      activity: P4A4 START raw={Len(Topic.g4a4)} slim={Len(Topic.g4a4slim)}
 
     - kind: InvokeAIBuilderModelAction
       id: parse_g4a4
       input:
         binding:
-          response: =Topic.g4a4
+          response: =Topic.g4a4slim
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
@@ -384,7 +396,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p4a4_done
-      activity: P4A4 OK parsed={Len(Topic.G4a4Parsed.text)}
+      activity: P4A4 OK in={CountRows(Split(Topic.g4a4slim, "<item>")) - 1} out={CountRows(Split(Topic.G4a4Parsed.text, Char(10)))} chars={Len(Topic.G4a4Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a4
@@ -408,15 +420,29 @@ beginDialog:
       response: Topic.g4b
       responseSchema: String
 
+    - kind: SetVariable
+      id: set_g4b_slim
+      variable: Topic.g4bslim
+      value: |-
+        =First(Split(Topic.g4b, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4b, "<description>"),
+            CountRows(Split(Topic.g4b, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4b
-      activity: P4B START raw={Len(Topic.g4b)}
+      activity: P4B START raw={Len(Topic.g4b)} slim={Len(Topic.g4bslim)}
 
     - kind: InvokeAIBuilderModelAction
       id: parse_g4b
       input:
         binding:
-          response: =Topic.g4b
+          response: =Topic.g4bslim
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
@@ -428,7 +454,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p4b_done
-      activity: P4B OK parsed={Len(Topic.G4bParsed.text)}
+      activity: P4B OK in={CountRows(Split(Topic.g4bslim, "<item>")) - 1} out={CountRows(Split(Topic.G4bParsed.text, Char(10)))} chars={Len(Topic.G4bParsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4b
@@ -452,15 +478,29 @@ beginDialog:
       response: Topic.g4c
       responseSchema: String
 
+    - kind: SetVariable
+      id: set_g4c_slim
+      variable: Topic.g4cslim
+      value: |-
+        =First(Split(Topic.g4c, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4c, "<description>"),
+            CountRows(Split(Topic.g4c, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4c
-      activity: P4C START raw={Len(Topic.g4c)}
+      activity: P4C START raw={Len(Topic.g4c)} slim={Len(Topic.g4cslim)}
 
     - kind: InvokeAIBuilderModelAction
       id: parse_g4c
       input:
         binding:
-          response: =Topic.g4c
+          response: =Topic.g4cslim
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
@@ -472,7 +512,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p4c_done
-      activity: P4C OK parsed={Len(Topic.G4cParsed.text)}
+      activity: P4C OK in={CountRows(Split(Topic.g4cslim, "<item>")) - 1} out={CountRows(Split(Topic.G4cParsed.text, Char(10)))} chars={Len(Topic.G4cParsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4c
@@ -496,15 +536,29 @@ beginDialog:
       response: Topic.g4d1
       responseSchema: String
 
+    - kind: SetVariable
+      id: set_g4d1_slim
+      variable: Topic.g4d1slim
+      value: |-
+        =First(Split(Topic.g4d1, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4d1, "<description>"),
+            CountRows(Split(Topic.g4d1, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4d1
-      activity: P4D1 START raw={Len(Topic.g4d1)}
+      activity: P4D1 START raw={Len(Topic.g4d1)} slim={Len(Topic.g4d1slim)}
 
     - kind: InvokeAIBuilderModelAction
       id: parse_g4d1
       input:
         binding:
-          response: =Topic.g4d1
+          response: =Topic.g4d1slim
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
@@ -516,7 +570,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p4d1_done
-      activity: P4D1 OK parsed={Len(Topic.G4d1Parsed.text)}
+      activity: P4D1 OK in={CountRows(Split(Topic.g4d1slim, "<item>")) - 1} out={CountRows(Split(Topic.G4d1Parsed.text, Char(10)))} chars={Len(Topic.G4d1Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4d1
@@ -540,15 +594,29 @@ beginDialog:
       response: Topic.g4d2
       responseSchema: String
 
+    - kind: SetVariable
+      id: set_g4d2_slim
+      variable: Topic.g4d2slim
+      value: |-
+        =First(Split(Topic.g4d2, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4d2, "<description>"),
+            CountRows(Split(Topic.g4d2, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
     - kind: SendActivity
       id: dbg_p4d2
-      activity: P4D2 START raw={Len(Topic.g4d2)}
+      activity: P4D2 START raw={Len(Topic.g4d2)} slim={Len(Topic.g4d2slim)}
 
     - kind: InvokeAIBuilderModelAction
       id: parse_g4d2
       input:
         binding:
-          response: =Topic.g4d2
+          response: =Topic.g4d2slim
           windowend: =Topic.WindowEnd
           windowstart_20: =Topic.WindowStart
 
@@ -560,7 +628,7 @@ beginDialog:
 
     - kind: SendActivity
       id: dbg_p4d2_done
-      activity: P4D2 OK parsed={Len(Topic.G4d2Parsed.text)}
+      activity: P4D2 OK in={CountRows(Split(Topic.g4d2slim, "<item>")) - 1} out={CountRows(Split(Topic.G4d2Parsed.text, Char(10)))} chars={Len(Topic.G4d2Parsed.text)}
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4d2
@@ -587,7 +655,6 @@ beginDialog:
         Topic.C3.text & Char(10) &
         Topic.C4a1.text & Char(10) &
         Topic.C4a2.text & Char(10) &
-        Topic.C4a3.text & Char(10) &
         Topic.C4a4.text & Char(10) &
         Topic.C4b.text & Char(10) &
         Topic.C4c.text & Char(10) &
@@ -595,8 +662,8 @@ beginDialog:
         Topic.C4d2.text
 
     - kind: SetVariable
-      id: set_shortlist
-      variable: Topic.Shortlist
+      id: set_shortlist_prewindow
+      variable: Topic.ShortlistPreWindow
       value: |-
         =Concat(
           Filter(
@@ -608,8 +675,66 @@ beginDialog:
         )
 
     - kind: SendActivity
+      id: dbg_prewindow
+      activity: "PRE-WINDOW LEN: {Len(Topic.ShortlistPreWindow)}"
+
+    - kind: SetVariable
+      id: set_datesfound
+      variable: Topic.DatesFound
+      value: |-
+        =Concat(
+          ForAll(
+            Filter(
+              Split(Topic.ShortlistPreWindow, Char(10)),
+              CountRows(Split(ThisRecord.Value, "|")) >= 5
+            ),
+            Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 4)).Value)
+          ),
+          Value,
+          " / "
+        )
+
+    - kind: SendActivity
+      id: dbg_datesfound
+      activity: "DATES: {Topic.DatesFound}"
+
+    - kind: SetVariable
+      id: set_shortlist
+      variable: Topic.Shortlist
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.ShortlistPreWindow, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 5
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 4)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 4)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
       id: debug_shortlist
-      activity: "SHORTLIST LEN: {Len(Topic.Shortlist)}"
+      activity: "POST-WINDOW LEN: {Len(Topic.Shortlist)}"
 
     - kind: InvokeAIBuilderModelAction
       id: sort_all

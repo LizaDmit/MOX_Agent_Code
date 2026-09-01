@@ -1,11 +1,16 @@
 mcs.metadata:
-  componentName: Test_News_Fetching
+  componentName: MOX_NewsFetching
 kind: GptComponentMetadata
+displayName: MOX_NewsFetching
 instructions:
 responseInstructions:
 gptCapabilities:
   webBrowsing: false
   codeInterpreter: false
+
+conversationStarters:
+  - title: Fetch News
+    text: mox news
 
 aISettings:
   model: {}

@@ -1,4 +1,4 @@
-﻿displayName: Test_News_Fetching
+﻿displayName: MOX_NewsFetching
 schemaName: cr921_TestNewsFetching
 accessControlPolicy: GroupMembership
 authenticationMode: Integrated
@@ -27,6 +27,6 @@ configuration:
 
   deferredProvisioning: false
 
-publishedOn: 2026-08-13T09:39:07.0000000Z
+publishedOn: 2026-08-31T09:29:36.0000000Z
 template: default-2.1.0
 language: 1033
