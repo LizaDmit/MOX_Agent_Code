@@ -22,40 +22,63 @@ EXCEPTION: if the channel is Google News, the channel title is not the outlet.\
 Use the <source> element inside the <item> instead. Never output "Google News"\
 as an outlet.\
 \
-PUBDATE - from <pubDate>. Copy exactly, including the timezone offset.\
+PUBDATE - from <pubDate>. Convert to Hong Kong time (UTC+8) and output in\
+exactly this format: yyyy-mm-dd hh:mm  (24-hour clock, zero-padded)\
+- Offset +0800: reformat only, do not add hours.\
+- GMT, UTC or +0000: add 8 hours. If that passes midnight, advance the date.\
+Examples:\
+  Thu, 13 Aug 2026 07:25:00 GMT    ->  2026-08-13 15:25\
+  Fri, 14 Aug 2026 11:25:01 +0800  ->  2026-08-14 11:25\
 \
 LINK - from <link>. Copy exactly. Do not shorten, resolve or rewrite. URLs may\
 contain non-ASCII characters and must be preserved as they appear.\
 Remove any zero-width or invisible characters immediately before or after the\
-URL. There must be no whitespace or invisible characters between :: and the URL\
-or at the end of the line.\
+URL. There must be no whitespace or invisible characters between the final |\
+separator and the URL, or at the end of the line.\
 \
 Use <title>, <pubDate>, <link> and <source> only.\
 Ignore <description> and <content:encoded> entirely.\
 \
-TIME WINDOW\
+DATE INPUTS\
 \
-You will receive a second input named  , a Hong Kong time in the format\
-yyyy-mm-dd hh:mm.\
+You will also receive two inputs,  and  , both Hong\
+Kong times in the format yyyy-mm-dd hh:mm.\
 \
-Convert each item's PUBDATE to Hong Kong time (UTC+8) before comparing.\
-Incoming offsets vary: +0800 is already Hong Kong time, +0000 and GMT need\
-8 hours added.\
-\
-Output a line ONLY for items whose PUBDATE is at or after the cutoff.\
-Items older than the cutoff produce no output at all.\
-If no item is within the window, output exactly: NONE\
+These are passed through for a later processing step. They play no part in\
+your task. Do not compare any item's PUBDATE against them. Do not exclude,\
+skip or drop any item because of its date or time, however old or recent.\
+Date filtering happens after your output, not in it.\
 \
 GRAPHIC CONTENT\
 \
 If a headline mentions death, dying, suicide, self-harm, killing, murder,\
-stabbing, shooting, attack, casualties, accident, injury or abuse, output\
-NOTHING for that item. No line, no placeholder, no marker. Skip it silently.\
-When in any doubt, skip.\
+stabbing, shooting, attack, casualties, accident, injury or abuse, do not\
+output the headline text. Output a line for the item in this format instead:\
+\
+SKIPPED | OUTLET | PUBDATE | LINK\
+\
+Fill OUTLET, PUBDATE and LINK exactly as the FIELD RULES describe. Only the\
+headline is withheld. Every item in the input produces exactly one output\
+line, either a normal line or a SKIPPED line.\
+\
+OUTPUT WHEN EMPTY\
+\
+If there are no items in the input, or every item was skipped under GRAPHIC\
+CONTENT, output exactly: NONE\
 \
 PROHIBITIONS\
 \
 No commentary, no preamble, no numbering, no totals, no counts.\
-Do not omit items. Do not summarise or abbreviate the list.\
+Output exactly one line for every item in the input. Do not omit any item for\
+any reason. Do not summarise or abbreviate the list.\
 Do not merge or reorder items.\
+\
+\
+\
+\
+The input   contains several RSS documents joined together.\
+\
+\
+You will receive two additional inputs:  and  , both Hong\
+\
 }
