@@ -1618,7 +1618,7 @@ beginDialog:
 
     - kind: HttpRequestAction
       id: http_g4c
-      url: https://news.google.com/rss/search?q=site%3Aaastocks.com%20OR%20site%3Anow.com%20OR%20site%3Aquamnet.com%20OR%20site%3Athestandard.com.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      url: https://news.google.com/rss/search?q=site%3Anow.com%20OR%20site%3Aquamnet.com%20OR%20site%3Athestandard.com.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
       response: Topic.g4c
       responseSchema: String
 
@@ -1727,7 +1727,7 @@ beginDialog:
 
     - kind: HttpRequestAction
       id: http_g4d1
-      url: https://news.google.com/rss/search?q=site%3Areuters.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      url: https://news.google.com/rss/search?q=site%3Areuters.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
       response: Topic.g4d1
       responseSchema: String
 
@@ -1832,7 +1832,7 @@ beginDialog:
 
     - kind: HttpRequestAction
       id: http_g4d2
-      url: https://news.google.com/rss/search?q=site%3Awsj.com%20OR%20site%3Ahket.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      url: https://news.google.com/rss/search?q=site%3Ahket.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
       response: Topic.g4d2
       responseSchema: String
 
@@ -2040,6 +2040,636 @@ beginDialog:
 
       aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
 
+    - kind: HttpRequestAction
+      id: http_g4f
+      url: https://news.google.com/rss/search?q=site%3Astheadline.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4f
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4f_slim
+      variable: Topic.g4fslim
+      value: |-
+        =First(Split(Topic.g4f, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4f, "<description>"),
+            CountRows(Split(Topic.g4f, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4f_fx
+      variable: Topic.G4fFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4fslim, "<item>"),
+                    CountRows(Split(Topic.g4fslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4f
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4fFx)) Or Topic.G4fFx = "FXERROR", "NONE", Topic.G4fFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4f
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4g
+      url: https://news.google.com/rss/search?q=site%3Ascmp.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
+      response: Topic.g4g
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4g_slim
+      variable: Topic.g4gslim
+      value: |-
+        =First(Split(Topic.g4g, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4g, "<description>"),
+            CountRows(Split(Topic.g4g, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4g_fx
+      variable: Topic.G4gFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4gslim, "<item>"),
+                    CountRows(Split(Topic.g4gslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4g
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4gFx)) Or Topic.G4gFx = "FXERROR", "NONE", Topic.G4gFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4g
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4h
+      url: https://news.google.com/rss/search?q=site%3Abastillepost.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4h
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4h_slim
+      variable: Topic.g4hslim
+      value: |-
+        =First(Split(Topic.g4h, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4h, "<description>"),
+            CountRows(Split(Topic.g4h, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4h_fx
+      variable: Topic.G4hFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4hslim, "<item>"),
+                    CountRows(Split(Topic.g4hslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4h
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4hFx)) Or Topic.G4hFx = "FXERROR", "NONE", Topic.G4hFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4h
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4i
+      url: https://news.google.com/rss/search?q=site%3Ahk.finance.yahoo.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4i
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4i_slim
+      variable: Topic.g4islim
+      value: |-
+        =First(Split(Topic.g4i, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4i, "<description>"),
+            CountRows(Split(Topic.g4i, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4i_fx
+      variable: Topic.G4iFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4islim, "<item>"),
+                    CountRows(Split(Topic.g4islim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4i
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4iFx)) Or Topic.G4iFx = "FXERROR", "NONE", Topic.G4iFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4i
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4k
+      url: https://news.google.com/rss/search?q=site%3Aft.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
+      response: Topic.g4k
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4k_slim
+      variable: Topic.g4kslim
+      value: |-
+        =First(Split(Topic.g4k, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4k, "<description>"),
+            CountRows(Split(Topic.g4k, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4k_fx
+      variable: Topic.G4kFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4kslim, "<item>"),
+                    CountRows(Split(Topic.g4kslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4k
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4kFx)) Or Topic.G4kFx = "FXERROR", "NONE", Topic.G4kFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4k
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: HttpRequestAction
+      id: http_g4l
+      url: https://news.google.com/rss/search?q=site%3Awsj.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
+      response: Topic.g4l
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4l_slim
+      variable: Topic.g4lslim
+      value: |-
+        =First(Split(Topic.g4l, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4l, "<description>"),
+            CountRows(Split(Topic.g4l, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4l_fx
+      variable: Topic.G4lFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4lslim, "<item>"),
+                    CountRows(Split(Topic.g4lslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4l
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4lFx)) Or Topic.G4lFx = "FXERROR", "NONE", Topic.G4lFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4l
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
     - kind: SendActivity
       id: hb_4
       activity: Applying the time window and sorting results.
@@ -2059,7 +2689,13 @@ beginDialog:
         Topic.C4c.text & Char(10) &
         Topic.C4d1.text & Char(10) &
         Topic.C4d2.text & Char(10) &
-        Topic.C4e.text
+        Topic.C4e.text & Char(10) &
+        Topic.C4f.text & Char(10) &
+        Topic.C4g.text & Char(10) &
+        Topic.C4h.text & Char(10) &
+        Topic.C4i.text & Char(10) &
+        Topic.C4k.text & Char(10) &
+        Topic.C4l.text
 
     - kind: SetVariable
       id: set_shortlist_prewindow

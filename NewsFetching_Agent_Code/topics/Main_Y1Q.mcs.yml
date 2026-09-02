@@ -144,6 +144,10 @@ beginDialog:
       id: dbg_g1a_fx_head
       activity: "G1A SINGTAO FX HEAD: {Left(Topic.G1aFx, 300)}"
 
+    - kind: SendActivity
+      id: dbg_g1a_range
+      activity: "G1A RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1aFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1aFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: HttpRequestAction
       id: http_g1b
       url: https://www.i-cable.com/category/%E8%B2%A1%E7%B6%93%E8%B3%87%E8%A8%8A/feed/
@@ -246,6 +250,10 @@ beginDialog:
     - kind: SendActivity
       id: dbg_g1b_fx_head
       activity: "G1B ICABLE-FIN FX HEAD: {Left(Topic.G1bFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g1b_range
+      activity: "G1B RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
 
     - kind: HttpRequestAction
       id: http_g1c
@@ -350,6 +358,10 @@ beginDialog:
       id: dbg_g1c_fx_head
       activity: "G1C ICABLE-NEWS FX HEAD: {Left(Topic.G1cFx, 300)}"
 
+    - kind: SendActivity
+      id: dbg_g1c_range
+      activity: "G1C RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1cFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1cFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: HttpRequestAction
       id: http_g1d
       url: https://www.scmp.com/rss/91/feed/
@@ -453,6 +465,10 @@ beginDialog:
       id: dbg_g1d_fx_head
       activity: "G1D SCMP FX HEAD: {Left(Topic.G1dFx, 300)}"
 
+    - kind: SendActivity
+      id: dbg_g1d_range
+      activity: "G1D RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1dFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G1dFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: SetVariable
       id: set_g1_fxall
       variable: Topic.G1FxAll
@@ -468,33 +484,6 @@ beginDialog:
           Value,
           Char(10)
         )
-
-    - kind: SetVariable
-      id: set_g1_oldest
-      variable: Topic.G1Oldest
-      value: |-
-        =Concat(
-          FirstN(
-            Sort(
-              ForAll(
-                Filter(
-                  Split(Topic.G1FxAll, Char(10)),
-                  CountRows(Split(ThisRecord.Value, "|")) >= 4
-                ),
-                Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value)
-              ),
-              Value,
-              SortOrder.Ascending
-            ),
-            1
-          ),
-          Value,
-          ""
-        )
-
-    - kind: SendActivity
-      id: dbg_g1_oldest
-      activity: "G1 OLDEST: {Topic.G1Oldest} | WINDOW START: {Topic.WindowStart}"
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g1
@@ -615,6 +604,10 @@ beginDialog:
       id: dbg_g2a_fx_head
       activity: "G2A BASTILLE FX HEAD: {Left(Topic.G2aFx, 300)}"
 
+    - kind: SendActivity
+      id: dbg_g2a_range
+      activity: "G2A RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G2aFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G2aFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: HttpRequestAction
       id: http_g2b
       url: https://www.etnet.com.hk/www/tc/news/rss.php?section=editor&fid=538467
@@ -717,6 +710,10 @@ beginDialog:
     - kind: SendActivity
       id: dbg_g2b_fx_head
       activity: "G2B ETNET FX HEAD: {Left(Topic.G2bFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g2b_range
+      activity: "G2B RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G2bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G2bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
 
     - kind: SetVariable
       id: set_g2_fxall
@@ -862,6 +859,10 @@ beginDialog:
       id: dbg_g3a_fx_head
       activity: "G3A YAHOO FX HEAD: {Left(Topic.G3aFx, 300)}"
 
+    - kind: SendActivity
+      id: dbg_g3a_range
+      activity: "G3A RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3aFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3aFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: HttpRequestAction
       id: http_g3b
       url: https://www.ft.com/rss/home/international
@@ -964,6 +965,10 @@ beginDialog:
     - kind: SendActivity
       id: dbg_g3b_fx_head
       activity: "G3B FT FX HEAD: {Left(Topic.G3bFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g3b_range
+      activity: "G3B RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
 
     - kind: HttpRequestAction
       id: http_g3c
@@ -1071,6 +1076,10 @@ beginDialog:
       id: dbg_g3c_fx_head
       activity: "G3C CNBC FX HEAD: {Left(Topic.G3cFx, 300)}"
 
+    - kind: SendActivity
+      id: dbg_g3c_range
+      activity: "G3C RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3cFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3cFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: HttpRequestAction
       id: http_g3d
       url: https://fintechnews.hk/feed/
@@ -1173,6 +1182,10 @@ beginDialog:
     - kind: SendActivity
       id: dbg_g3d_fx_head
       activity: "G3D FINTECHHK FX HEAD: {Left(Topic.G3dFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g3d_range
+      activity: "G3D RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3dFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G3dFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
 
     - kind: SetVariable
       id: set_g3_fxall
@@ -1307,6 +1320,10 @@ beginDialog:
       id: dbg_p4a1_head
       activity: "P4A1 FX HEAD: {Left(Topic.G4a1Fx, 600)}"
 
+    - kind: SendActivity
+      id: dbg_g4a1_range
+      activity: "P4A1 RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a1Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a1Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a1
       input:
@@ -1423,6 +1440,10 @@ beginDialog:
     - kind: SendActivity
       id: dbg_p4a2_head
       activity: "P4A2 FX HEAD: {Left(Topic.G4a2Fx, 600)}"
+
+    - kind: SendActivity
+      id: dbg_g4a2_range
+      activity: "P4A2 RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a2Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a2Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a2
@@ -1541,6 +1562,10 @@ beginDialog:
       id: dbg_p4a3_head
       activity: "P4A3 FX HEAD: {Left(Topic.G4a3Fx, 600)}"
 
+    - kind: SendActivity
+      id: dbg_g4a3_range
+      activity: "P4A3 RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a3Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a3Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a3
       input:
@@ -1657,6 +1682,10 @@ beginDialog:
     - kind: SendActivity
       id: dbg_p4a4_head
       activity: "P4A4 FX HEAD: {Left(Topic.G4a4Fx, 600)}"
+
+    - kind: SendActivity
+      id: dbg_g4a4_range
+      activity: "P4A4 RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a4Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4a4Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a4
@@ -1775,6 +1804,10 @@ beginDialog:
       id: dbg_p4b_head
       activity: "P4B FX HEAD: {Left(Topic.G4bFx, 600)}"
 
+    - kind: SendActivity
+      id: dbg_g4b_range
+      activity: "P4B RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4bFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4b
       input:
@@ -1793,7 +1826,7 @@ beginDialog:
 
     - kind: HttpRequestAction
       id: http_g4c
-      url: https://news.google.com/rss/search?q=site%3Aaastocks.com%20OR%20site%3Anow.com%20OR%20site%3Aquamnet.com%20OR%20site%3Athestandard.com.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      url: https://news.google.com/rss/search?q=site%3Anow.com%20OR%20site%3Aquamnet.com%20OR%20site%3Athestandard.com.hk%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
       response: Topic.g4c
       responseSchema: String
 
@@ -1892,6 +1925,10 @@ beginDialog:
       id: dbg_p4c_head
       activity: "P4C FX HEAD: {Left(Topic.G4cFx, 600)}"
 
+    - kind: SendActivity
+      id: dbg_g4c_range
+      activity: "P4C RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4cFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4cFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4c
       input:
@@ -1910,7 +1947,7 @@ beginDialog:
 
     - kind: HttpRequestAction
       id: http_g4d1
-      url: https://news.google.com/rss/search?q=site%3Areuters.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      url: https://news.google.com/rss/search?q=site%3Areuters.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
       response: Topic.g4d1
       responseSchema: String
 
@@ -2009,6 +2046,10 @@ beginDialog:
       id: dbg_p4d1_head
       activity: "P4D1 FX HEAD: {Left(Topic.G4d1Fx, 600)}"
 
+    - kind: SendActivity
+      id: dbg_g4d1_range
+      activity: "P4D1 RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4d1Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4d1Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4d1
       input:
@@ -2027,7 +2068,7 @@ beginDialog:
 
     - kind: HttpRequestAction
       id: http_g4d2
-      url: https://news.google.com/rss/search?q=site%3Awsj.com%20OR%20site%3Ahket.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      url: https://news.google.com/rss/search?q=site%3Ahket.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
       response: Topic.g4d2
       responseSchema: String
 
@@ -2125,6 +2166,10 @@ beginDialog:
     - kind: SendActivity
       id: dbg_p4d2_head
       activity: "P4D2 FX HEAD: {Left(Topic.G4d2Fx, 600)}"
+
+    - kind: SendActivity
+      id: dbg_g4d2_range
+      activity: "P4D2 RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4d2Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4d2Fx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
 
     - kind: InvokeAIBuilderModelAction
       id: classify_g4d2
@@ -2243,6 +2288,10 @@ beginDialog:
       id: dbg_p4e_head
       activity: "P4E FX HEAD: {Left(Topic.G4eFx, 300)}"
 
+    - kind: SendActivity
+      id: dbg_g4e_range
+      activity: "P4E RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4eFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4eFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4e
       input:
@@ -2259,6 +2308,732 @@ beginDialog:
       id: dbg_c4e_done
       activity: "C4E OK: {Topic.C4e.text}"
 
+    - kind: HttpRequestAction
+      id: http_g4f
+      url: https://news.google.com/rss/search?q=site%3Astheadline.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4f
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4f_slim
+      variable: Topic.g4fslim
+      value: |-
+        =First(Split(Topic.g4f, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4f, "<description>"),
+            CountRows(Split(Topic.g4f, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4f_fx
+      variable: Topic.G4fFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4fslim, "<item>"),
+                    CountRows(Split(Topic.g4fslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: SendActivity
+      id: dbg_p4f
+      activity: P4F FX raw={Len(Topic.g4f)} slim={Len(Topic.g4fslim)} in={CountRows(Split(Topic.g4fslim, "<item>")) - 1} lines={CountRows(Split(Topic.G4fFx, Char(10)))} chars={Len(Topic.G4fFx)}
+
+    - kind: SendActivity
+      id: dbg_p4f_head
+      activity: "P4F FX HEAD: {Left(Topic.G4fFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g4f_range
+      activity: "P4F RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4fFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4fFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4f
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4fFx)) Or Topic.G4fFx = "FXERROR", "NONE", Topic.G4fFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4f
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4f_done
+      activity: "C4F OK: {Topic.C4f.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4g
+      url: https://news.google.com/rss/search?q=site%3Ascmp.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
+      response: Topic.g4g
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4g_slim
+      variable: Topic.g4gslim
+      value: |-
+        =First(Split(Topic.g4g, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4g, "<description>"),
+            CountRows(Split(Topic.g4g, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4g_fx
+      variable: Topic.G4gFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4gslim, "<item>"),
+                    CountRows(Split(Topic.g4gslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: SendActivity
+      id: dbg_p4g
+      activity: P4G FX raw={Len(Topic.g4g)} slim={Len(Topic.g4gslim)} in={CountRows(Split(Topic.g4gslim, "<item>")) - 1} lines={CountRows(Split(Topic.G4gFx, Char(10)))} chars={Len(Topic.G4gFx)}
+
+    - kind: SendActivity
+      id: dbg_p4g_head
+      activity: "P4G FX HEAD: {Left(Topic.G4gFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g4g_range
+      activity: "P4G RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4gFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4gFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4g
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4gFx)) Or Topic.G4gFx = "FXERROR", "NONE", Topic.G4gFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4g
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4g_done
+      activity: "C4G OK: {Topic.C4g.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4h
+      url: https://news.google.com/rss/search?q=site%3Abastillepost.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4h
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4h_slim
+      variable: Topic.g4hslim
+      value: |-
+        =First(Split(Topic.g4h, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4h, "<description>"),
+            CountRows(Split(Topic.g4h, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4h_fx
+      variable: Topic.G4hFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4hslim, "<item>"),
+                    CountRows(Split(Topic.g4hslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: SendActivity
+      id: dbg_p4h
+      activity: P4H FX raw={Len(Topic.g4h)} slim={Len(Topic.g4hslim)} in={CountRows(Split(Topic.g4hslim, "<item>")) - 1} lines={CountRows(Split(Topic.G4hFx, Char(10)))} chars={Len(Topic.G4hFx)}
+
+    - kind: SendActivity
+      id: dbg_p4h_head
+      activity: "P4H FX HEAD: {Left(Topic.G4hFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g4h_range
+      activity: "P4H RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4hFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4hFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4h
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4hFx)) Or Topic.G4hFx = "FXERROR", "NONE", Topic.G4hFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4h
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4h_done
+      activity: "C4H OK: {Topic.C4h.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4i
+      url: https://news.google.com/rss/search?q=site%3Ahk.finance.yahoo.com%20when%3A2d&hl=zh-HK&gl=HK&ceid=HK:zh-Hant
+      response: Topic.g4i
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4i_slim
+      variable: Topic.g4islim
+      value: |-
+        =First(Split(Topic.g4i, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4i, "<description>"),
+            CountRows(Split(Topic.g4i, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4i_fx
+      variable: Topic.G4iFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4islim, "<item>"),
+                    CountRows(Split(Topic.g4islim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: SendActivity
+      id: dbg_p4i
+      activity: P4I FX raw={Len(Topic.g4i)} slim={Len(Topic.g4islim)} in={CountRows(Split(Topic.g4islim, "<item>")) - 1} lines={CountRows(Split(Topic.G4iFx, Char(10)))} chars={Len(Topic.G4iFx)}
+
+    - kind: SendActivity
+      id: dbg_p4i_head
+      activity: "P4I FX HEAD: {Left(Topic.G4iFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g4i_range
+      activity: "P4I RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4iFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4iFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4i
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4iFx)) Or Topic.G4iFx = "FXERROR", "NONE", Topic.G4iFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4i
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4i_done
+      activity: "C4I OK: {Topic.C4i.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4k
+      url: https://news.google.com/rss/search?q=site%3Aft.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
+      response: Topic.g4k
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4k_slim
+      variable: Topic.g4kslim
+      value: |-
+        =First(Split(Topic.g4k, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4k, "<description>"),
+            CountRows(Split(Topic.g4k, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4k_fx
+      variable: Topic.G4kFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4kslim, "<item>"),
+                    CountRows(Split(Topic.g4kslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: SendActivity
+      id: dbg_p4k
+      activity: P4K FX raw={Len(Topic.g4k)} slim={Len(Topic.g4kslim)} in={CountRows(Split(Topic.g4kslim, "<item>")) - 1} lines={CountRows(Split(Topic.G4kFx, Char(10)))} chars={Len(Topic.G4kFx)}
+
+    - kind: SendActivity
+      id: dbg_p4k_head
+      activity: "P4K FX HEAD: {Left(Topic.G4kFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g4k_range
+      activity: "P4K RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4kFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4kFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4k
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4kFx)) Or Topic.G4kFx = "FXERROR", "NONE", Topic.G4kFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4k
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4k_done
+      activity: "C4K OK: {Topic.C4k.text}"
+
+    - kind: HttpRequestAction
+      id: http_g4l
+      url: https://news.google.com/rss/search?q=site%3Awsj.com%20when%3A2d&hl=en-HK&gl=HK&ceid=HK:en
+      response: Topic.g4l
+      responseSchema: String
+
+    - kind: SetVariable
+      id: set_g4l_slim
+      variable: Topic.g4lslim
+      value: |-
+        =First(Split(Topic.g4l, "<description>")).Value &
+        Concat(
+          LastN(
+            Split(Topic.g4l, "<description>"),
+            CountRows(Split(Topic.g4l, "<description>")) - 1
+          ),
+          Last(Split(ThisRecord.Value, "</description>")).Value,
+          ""
+        )
+
+    - kind: SetVariable
+      id: set_g4l_fx
+      variable: Topic.G4lFx
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              ForAll(
+                ForAll(
+                  LastN(
+                    Split(Topic.g4lslim, "<item>"),
+                    CountRows(Split(Topic.g4lslim, "<item>")) - 1
+                  ),
+                  {
+                    t: First(Split(Last(Split(ThisRecord.Value, "<title>")).Value, "</title>")).Value,
+                    l: First(Split(Last(Split(ThisRecord.Value, "<link>")).Value, "</link>")).Value,
+                    p: Trim(First(Split(Last(Split(ThisRecord.Value, "<pubDate>")).Value, "</pubDate>")).Value),
+                    s: First(Split(Last(FirstN(Split(Last(Split(ThisRecord.Value, "<source")).Value, ">"), 2)).Value, "</source")).Value
+                  }
+                ),
+                {
+                  t: ThisRecord.t,
+                  l: ThisRecord.l,
+                  s: ThisRecord.s,
+                  dt: DateAdd(
+                        DateAdd(
+                          DateAdd(
+                            Date(
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 4)).Value),
+                              Switch(
+                                Last(FirstN(Split(ThisRecord.p, " "), 3)).Value,
+                                "Jan", 1, "Feb", 2, "Mar", 3, "Apr", 4, "May", 5, "Jun", 6,
+                                "Jul", 7, "Aug", 8, "Sep", 9, "Oct", 10, "Nov", 11, "Dec", 12,
+                                1
+                              ),
+                              Value(Last(FirstN(Split(ThisRecord.p, " "), 2)).Value)
+                            ),
+                            Value(First(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":")).Value),
+                            TimeUnit.Hours
+                          ),
+                          Value(Last(FirstN(Split(Last(FirstN(Split(ThisRecord.p, " "), 5)).Value, ":"), 2)).Value),
+                          TimeUnit.Minutes
+                        ),
+                        If(Last(FirstN(Split(ThisRecord.p, " "), 6)).Value = "+0800", 0, 8),
+                        TimeUnit.Hours
+                      )
+                }
+              ),
+              Substitute(
+                Substitute(
+                  Substitute(
+                    Substitute(
+                      Substitute(
+                        If(
+                          EndsWith(ThisRecord.t, " - " & ThisRecord.s),
+                          Left(ThisRecord.t, Len(ThisRecord.t) - Len(ThisRecord.s) - 3),
+                          ThisRecord.t
+                        ),
+                        "|", "-"),
+                      "&quot;", """"),
+                    "&#39;", "'"),
+                  "&lt;", "<"),
+                "&amp;", "&")
+              & " | " & ThisRecord.s
+              & " | " & Text(ThisRecord.dt, "yyyy-mm-dd hh:mm")
+              & " | " & ThisRecord.l
+            ),
+            Value,
+            Char(10)
+          ),
+          "FXERROR"
+        )
+
+    - kind: SendActivity
+      id: dbg_p4l
+      activity: P4L FX raw={Len(Topic.g4l)} slim={Len(Topic.g4lslim)} in={CountRows(Split(Topic.g4lslim, "<item>")) - 1} lines={CountRows(Split(Topic.G4lFx, Char(10)))} chars={Len(Topic.G4lFx)}
+
+    - kind: SendActivity
+      id: dbg_p4l_head
+      activity: "P4L FX HEAD: {Left(Topic.G4lFx, 300)}"
+
+    - kind: SendActivity
+      id: dbg_g4l_range
+      activity: "P4L RANGE: {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4lFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Ascending), 1), Value, \"\"), \"?\")} .. {IfError(Concat(FirstN(Sort(ForAll(Filter(Split(Topic.G4lFx, Char(10)), CountRows(Split(ThisRecord.Value, \"|\")) >= 4), Trim(Last(FirstN(Split(ThisRecord.Value, \"|\"), 3)).Value)), Value, SortOrder.Descending), 1), Value, \"\"), \"?\")}"
+
+    - kind: InvokeAIBuilderModelAction
+      id: classify_g4l
+      input:
+        binding:
+          result: =If(IsBlank(Trim(Topic.G4lFx)) Or Topic.G4lFx = "FXERROR", "NONE", Topic.G4lFx)
+
+      output:
+        binding:
+          predictionOutput: Topic.C4l
+
+      aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
+
+    - kind: SendActivity
+      id: dbg_c4l_done
+      activity: "C4L OK: {Topic.C4l.text}"
+
     - kind: SetVariable
       id: set_shortlist_raw
       variable: Topic.ShortlistRaw
@@ -2274,7 +3049,13 @@ beginDialog:
         Topic.C4c.text & Char(10) &
         Topic.C4d1.text & Char(10) &
         Topic.C4d2.text & Char(10) &
-        Topic.C4e.text
+        Topic.C4e.text & Char(10) &
+        Topic.C4f.text & Char(10) &
+        Topic.C4g.text & Char(10) &
+        Topic.C4h.text & Char(10) &
+        Topic.C4i.text & Char(10) &
+        Topic.C4k.text & Char(10) &
+        Topic.C4l.text
 
     - kind: SetVariable
       id: set_shortlist_prewindow
