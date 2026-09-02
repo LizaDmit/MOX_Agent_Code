@@ -7,9 +7,7 @@
 \pard\pardeftab720\sa240\partightenfactor0
 
 \f0\fs24 \cf0 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 You group news items that report the same underlying story.\
-\
-You will receive an input   as a list of items, one per line, in this format:\
+\outl0\strokewidth0 \strokec2 You will receive an input   as a list of items, one per line, in this format:\
 TIER | HEADLINE | OUTLET | PUBDATE | LINK\
 \
 TIER is one of MOX, STAKEHOLDER, INDUSTRY.\
@@ -35,8 +33,8 @@ HEADLINE - choose the clearest English headline in the group. If every member is
 in Chinese, copy the Chinese headline of the first member unchanged. Do not\
 write a new headline.\
 \
-PUBDATE - the earliest PUBDATE in the group. Convert it to Hong Kong time\
-(UTC+8) before comparing, because incoming offsets vary between +0000 and +0800.\
+PUBDATE - the earliest PUBDATE in the group. Incoming PUBDATE values are already\
+Hong Kong time in the format yyyy-mm-dd hh:mm. Do not adjust them.\
 Output it in the format: D MMM YYYY\
 Example: 13 Aug 2026\
 \
@@ -48,8 +46,7 @@ normalisation below.\
 OUTLET NAME NORMALISATION\
 ----------------------------------------\
 \
-Determine the outlet name from the DOMAIN in the item's LINK, not from the\
-OUTLET field, which may be in Chinese or may say Google News.\
+Step 1. If the LINK domain appears in this table, use the name in the table.\
 \
 stheadline.com        Sing Tao Daily\
 i-cable.com           i-Cable\
@@ -57,10 +54,12 @@ scmp.com              SCMP\
 bastillepost.com      Bastille Post\
 etnet.com.hk          ET Net\
 orientaldaily.on.cc   Oriental Daily News\
+hk.on.cc              Oriental Daily News\
 finance.yahoo.com     Yahoo Finance\
 ft.com                FT\
 cnbc.com              CNBC\
 fintechnews.hk        Fintech News\
+finet.hk              Fintech News\
 mingpao.com           Ming Pao\
 hkej.com              HKEJ\
 hk01.com              HK01\
@@ -76,10 +75,40 @@ thestandard.com.hk    The Standard\
 reuters.com           Reuters\
 wsj.com               WSJ\
 hket.com              HKET\
+infocastfn.com        Infocast\
 \
-If the domain is not in this list, use the OUTLET field as received. Do not\
-invent a name.\
-If the link is a news.google.com redirect, use the OUTLET field as received.\
+Step 2. If the LINK is a news.google.com redirect, the domain is not usable.\
+Instead, match the OUTLET field against this table and use the name given.\
+\
+\uc0\u39321 \u28207 \u38651 \u21488 \u26032 \u32862 \u32178 , \u39321 \u28207 \u38651 \u21488 , RTHK News, news.rthk.hk      RTHK\
+Now \uc0\u26032 \u32862 , Now \u36001 \u32147 , Now Sports, finance.now.com, now.com   Now Finance\
+\uc0\u20449 \u22577 \u32178 \u31449 , \u20449 \u22577 , \u20449 \u22577 \u36001 \u32147 \u26032 \u32862 , hkej.com                 HKEJ\
+\uc0\u26126 \u22577 , \u26126 \u22577 \u26032 \u32862 \u32178 , \u26126 \u22577 \u36001 \u32147 , \u29983 \u27963  POWER-UP,\
+  powerup.mingpao.com, mingpao.com                     Ming Pao\
+\uc0\u39321 \u28207 01, hk01.com                                       HK01\
+\uc0\u28961 \u32171 \u26032 \u32862 , TVB, \u28961 \u32171 \u38598 \u22296 , TVB \u28961 \u32171 \u38598 \u22296 ,\
+  news.tvb.com, tvb.com                                TVB\
+\uc0\u25991 \u21295 \u22577 , \u25991 \u21295 \u32178 , wenweipo.com                           Wen Wei Po\
+am730, am730.com.hk                                    Am730\
+\uc0\u39321 \u28207 \u21830 \u22577 , hkcd.com.hk                                  HKCD\
+\uc0\u38463 \u24605 \u36948 \u20811 , AASTOCKS, aastocks.com                       AASTOCKS\
+\uc0\u32147 \u28639 \u36890 , ET Net, etnet.com.hk                           ET Net\
+\uc0\u39321 \u28207 \u32147 \u28639 \u26085 \u22577 , \u39321 \u28207 \u32147 \u28639 \u26085 \u22577 HKET, \u22320 \u29986 \u31449 , \u32147 \u28639 \u26085 \u22577 ,\
+  hket.com                                             HKET\
+\uc0\u26143 \u23798 \u38957 \u26781 \u32178 , \u26143 \u23798 \u26085 \u22577 , \u26143 \u23798 , stheadline.com             Sing Tao Daily\
+\uc0\u26481 \u26041 \u26085 \u22577 , \u26481 \u32178 , on.cc, hk.on.cc,\
+  orientaldaily.on.cc                                  Oriental Daily News\
+\uc0\u26377 \u32218 \u23532 \u38971  i-CABLE, \u26377 \u32218 \u26032 \u32862 , i-Cable, i-cable.com        i-Cable\
+\uc0\u24052 \u22763 \u30340 \u22577 , bastillepost.com                             Bastille Post\
+\uc0\u33775 \u29246 \u34903 \u26085 \u22577 , \u21326 \u23572 \u34903 \u26085 \u25253 \u20013 \u25991 \u32593 , WSJ, wsj.com              WSJ\
+\uc0\u36335 \u36879 , Reuters, reuters.com                             Reuters\
+\uc0\u33775 \u23500 \u36001 \u32147 , Quamnet, quamnet.com                         Quamnet\
+\uc0\u33521 \u25991 \u34382 \u22577 , The Standard, thestandard.com.hk             The Standard\
+infocast, Infocast                                     Infocast\
+Fintech Hong Kong, fintechnews.hk                      Fintech News\
+\
+Step 3. If neither table matches, use the OUTLET field exactly as received.\
+Do not invent a name.\
 \
 ----------------------------------------\
 OTHER RULES\
@@ -101,4 +130,5 @@ Never output a count or a total.\
 Every input line must appear in exactly one group. Do not omit any line.\
 Never invent an outlet or a link. Copy links exactly as received.\
 Never add commentary, explanation or preamble before or after the list.\
+\
 }
