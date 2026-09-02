@@ -19,6 +19,21 @@ they describe the same announcement, result, ruling, launch or data release by\
 the same organisation. Two items are NOT the same story when they merely share\
 a topic or an organisation.\
 \
+ADDITIONAL GROUPING RULES\
+\
+1. Rolling coverage is not one event. Successive reports of a moving number -\
+an index level, a share price, market turnover, a vote count, a storm signal -\
+taken at different times of the same day are SEPARATE stories, one group each.\
+Example: \uc0\u24658 \u25351 \u21322 \u26085 \u36300 256\u40670  (midday), \u24658 \u25351 \u19979 \u21320 \u21021 \u27573 \u36300 \u32004 1% (early afternoon) and\
+\uc0\u24658 \u25351 9\u26376 \u38283 \u23616 \u20302 \u25910 237\u40670  (close) are THREE groups, not one.\
+\
+2. Two items from the SAME outlet belong in one group only when their LINKs\
+are identical or their HEADLINEs are identical. Otherwise output them as\
+separate groups, even when the subject matter is close.\
+\
+3. When in doubt, do not merge. A story wrongly split costs one duplicate\
+line. A story wrongly merged destroys headlines and links. Prefer splitting.\
+\
 For each group, output exactly one line in this format:\
 TIER | HEADLINE | PUBDATE | OUTLET::LINK ;; OUTLET::LINK ;; OUTLET::LINK\
 \
@@ -84,7 +99,7 @@ Instead, match the OUTLET field against this table and use the name given.\
 Now \uc0\u26032 \u32862 , Now \u36001 \u32147 , Now Sports, finance.now.com, now.com   Now Finance\
 \uc0\u20449 \u22577 \u32178 \u31449 , \u20449 \u22577 , \u20449 \u22577 \u36001 \u32147 \u26032 \u32862 , hkej.com                 HKEJ\
 \uc0\u26126 \u22577 , \u26126 \u22577 \u26032 \u32862 \u32178 , \u26126 \u22577 \u36001 \u32147 , \u29983 \u27963  POWER-UP,\
-  powerup.mingpao.com, mingpao.com                     Ming Pao\
+  powerup.mingpao.com, news.mingpao.com, mingpao.com   Ming Pao\
 \uc0\u39321 \u28207 01, hk01.com                                       HK01\
 \uc0\u28961 \u32171 \u26032 \u32862 , TVB, \u28961 \u32171 \u38598 \u22296 , TVB \u28961 \u32171 \u38598 \u22296 ,\
   news.tvb.com, tvb.com                                TVB\
@@ -96,7 +111,7 @@ am730, am730.com.hk                                    Am730\
 \uc0\u39321 \u28207 \u32147 \u28639 \u26085 \u22577 , \u39321 \u28207 \u32147 \u28639 \u26085 \u22577 HKET, \u22320 \u29986 \u31449 , \u32147 \u28639 \u26085 \u22577 ,\
   hket.com                                             HKET\
 \uc0\u26143 \u23798 \u38957 \u26781 \u32178 , \u26143 \u23798 \u26085 \u22577 , \u26143 \u23798 , stheadline.com             Sing Tao Daily\
-\uc0\u26481 \u26041 \u26085 \u22577 , \u26481 \u32178 , on.cc, hk.on.cc,\
+\uc0\u26481 \u26041 \u26085 \u22577 , \u26481 \u32178 , on.cc\u26481 \u32178 , on.cc, hk.on.cc,\
   orientaldaily.on.cc                                  Oriental Daily News\
 \uc0\u26377 \u32218 \u23532 \u38971  i-CABLE, \u26377 \u32218 \u26032 \u32862 , i-Cable, i-cable.com        i-Cable\
 \uc0\u24052 \u22763 \u30340 \u22577 , bastillepost.com                             Bastille Post\
@@ -130,5 +145,4 @@ Never output a count or a total.\
 Every input line must appear in exactly one group. Do not omit any line.\
 Never invent an outlet or a link. Copy links exactly as received.\
 Never add commentary, explanation or preamble before or after the list.\
-\
 }
