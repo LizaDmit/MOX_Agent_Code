@@ -39,7 +39,7 @@ beginDialog:
 
     - kind: SendActivity
       id: hb_1
-      activity: Fetching Hong Kong news feeds. This takes a few minutes.
+      activity: Collecting Hong Kong news feeds. This takes about five minutes.
 
     - kind: HttpRequestAction
       id: http_g1a
@@ -1089,7 +1089,7 @@ beginDialog:
 
     - kind: SendActivity
       id: hb_2
-      activity: Reading Chinese-language outlets.
+      activity: Ten direct feeds read and classified. Now reading Google News.
 
     - kind: HttpRequestAction
       id: http_g4a1
@@ -1720,10 +1720,6 @@ beginDialog:
           predictionOutput: Topic.C4c
 
       aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
-
-    - kind: SendActivity
-      id: hb_3
-      activity: Reading international outlets.
 
     - kind: HttpRequestAction
       id: http_g4d1
@@ -2671,8 +2667,8 @@ beginDialog:
       aIModelId: 4ac27a1e-7c9a-4c41-a301-e28f5f9d1d5e
 
     - kind: SendActivity
-      id: hb_4
-      activity: Applying the time window and sorting results.
+      id: hb_3
+      activity: All feeds classified. Applying the 09:30 time window.
 
     - kind: SetVariable
       id: set_shortlist_raw
@@ -2744,6 +2740,10 @@ beginDialog:
           Char(10)
         )
 
+    - kind: SendActivity
+      id: hb_4
+      activity: Window applied. Sorting and formatting the shortlist.
+
     - kind: InvokeAIBuilderModelAction
       id: sort_all
       input:
@@ -2756,9 +2756,57 @@ beginDialog:
 
       aIModelId: 8429492a-ed4c-498f-a53e-9315f15949da
 
+    - kind: SetVariable
+      id: set_formatted
+      variable: Topic.Formatted
+      value: |-
+        =IfError(
+          Concat(
+            ForAll(
+              Filter(
+                Split(Topic.Sorted.text, Char(10)),
+                !IsBlank(Trim(ThisRecord.Value))
+              ),
+              If(
+                CountRows(Split(ThisRecord.Value, "|")) < 4 Or IsBlank(Find("::", Trim(Last(Split(ThisRecord.Value, "|")).Value))),
+                "- " & Trim(ThisRecord.Value),
+                "- **" & Trim(First(Split(ThisRecord.Value, "|")).Value) & "**  "
+                & "["
+                & Substitute(
+                    Substitute(
+                      Trim(
+                        Concat(
+                          FirstN(
+                            LastN(Split(ThisRecord.Value, "|"), CountRows(Split(ThisRecord.Value, "|")) - 1),
+                            CountRows(Split(ThisRecord.Value, "|")) - 3
+                          ),
+                          Value,
+                          "|"
+                        )
+                      ),
+                      "[", "("),
+                    "]", ")")
+                & "]("
+                & Trim(Mid(First(Split(Trim(Last(Split(ThisRecord.Value, "|")).Value), " ;; ")).Value, Find("::", First(Split(Trim(Last(Split(ThisRecord.Value, "|")).Value), " ;; ")).Value) + 2))
+                & ")"
+                & "  -  " & Trim(Last(FirstN(Split(ThisRecord.Value, "|"), CountRows(Split(ThisRecord.Value, "|")) - 1)).Value)
+                & "  -  "
+                & Concat(
+                    Split(Trim(Last(Split(ThisRecord.Value, "|")).Value), " ;; "),
+                    "[" & Trim(First(Split(ThisRecord.Value, "::")).Value) & "](" & Trim(Mid(ThisRecord.Value, Find("::", ThisRecord.Value) + 2)) & ")",
+                    ", "
+                  )
+              )
+            ),
+            Value,
+            Char(10)
+          ),
+          Topic.Sorted.text
+        )
+
     - kind: SendActivity
       id: send_result
-      activity: "{Topic.Sorted.text}"
+      activity: "{Topic.Formatted}"
 
 inputType: {}
 outputType: {}
