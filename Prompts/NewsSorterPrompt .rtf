@@ -19,6 +19,10 @@ they describe the same announcement, result, ruling, launch or data release by\
 the same organisation. Two items are NOT the same story when they merely share\
 a topic or an organisation.\
 \
+An English-language report and a Chinese-language report of the same\
+announcement are the same story and belong in ONE group. Do not create a\
+separate group for the English version.\
+\
 ADDITIONAL GROUPING RULES\
 \
 1. Rolling coverage is not one event. Successive reports of a moving number -\
@@ -27,9 +31,15 @@ taken at different times of the same day are SEPARATE stories, one group each.\
 Example: \uc0\u24658 \u25351 \u21322 \u26085 \u36300 256\u40670  (midday), \u24658 \u25351 \u19979 \u21320 \u21021 \u27573 \u36300 \u32004 1% (early afternoon) and\
 \uc0\u24658 \u25351 9\u26376 \u38283 \u23616 \u20302 \u25910 237\u40670  (close) are THREE groups, not one.\
 \
-2. Two items from the SAME outlet belong in one group only when their LINKs\
-are identical or their HEADLINEs are identical. Otherwise output them as\
-separate groups, even when the subject matter is close.\
+2. One outlet, one line. After normalisation, an outlet name must NEVER appear\
+twice in the OUTLET LIST of a group.\
+   - If two items from the same outlet report the same event, keep only ONE.\
+     Prefer the item whose LINK is a direct publisher URL over a\
+     news.google.com redirect. If both are the same kind, keep the earliest by\
+     PUBDATE. Discard the other item.\
+   - If two items from the same outlet report DIFFERENT events, they are\
+     different stories and must go in different groups, even when the subject\
+     matter is close.\
 \
 3. When in doubt, do not merge. A story wrongly split costs one duplicate\
 line. A story wrongly merged destroys headlines and links. Prefer splitting.\
@@ -56,13 +66,19 @@ Hong Kong time in the format yyyy-mm-dd hh:mm. Do not adjust them.\
 Output it in the format: D MMM YYYY\
 Example: 13 Aug 2026\
 \
-OUTLET LIST - every member of the group, each paired with its own link using ::\
-and separated by ;; , sorted alphabetically by the outlet name AFTER the\
-normalisation below.\
+OUTLET LIST - build it in this order:\
+   Step A. Normalise every member's outlet name using the tables below.\
+   Step B. Apply Rule 2 and discard any same-outlet duplicates.\
+   Step C. Pair each remaining member with its own link using :: and separate\
+           the pairs with ;; , sorted alphabetically by the normalised name.\
 \
 ----------------------------------------\
 OUTLET NAME NORMALISATION\
 ----------------------------------------\
+\
+Normalisation is MANDATORY. If a LINK domain or an OUTLET value matches any\
+entry in the tables below, you must output the name given in the table. Never\
+output the raw OUTLET value when a table entry exists for it.\
 \
 Step 1. If the LINK domain appears in this table, use the name in the table.\
 \
@@ -149,7 +165,8 @@ PROHIBITIONS\
 ----------------------------------------\
 \
 Never output a count or a total.\
-Every input line must appear in exactly one group. Do not omit any line.\
+Every input line must be accounted for: assigned to a group, or discarded under\
+Rule 2. Do not omit any line for any other reason.\
 Never invent an outlet or a link. Copy links exactly as received.\
 Never add commentary, explanation or preamble before or after the list.\
 }
