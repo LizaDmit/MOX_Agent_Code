@@ -41,6 +41,10 @@ beginDialog:
       id: dbg_window
       activity: "WINDOW: {Topic.WindowStart} to {Topic.WindowEnd} | NUM: {Topic.WindowStartNum} to {Topic.WindowEndNum}"
 
+    - kind: SendActivity
+      id: dbg_runstart
+      activity: RUN START {IfError(Text(Now(), "yyyy-mm-dd hh:mm:ss"), "NA")}
+
     - kind: HttpRequestAction
       id: http_g1a
       url: https://www.stheadline.com/rss
@@ -469,11 +473,49 @@ beginDialog:
           Char(10)
         )
 
+    - kind: SetVariable
+      id: set_g1_win
+      variable: Topic.G1Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G1FxAll, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g1_win
+      activity: G1 WIN lines={CountRows(Split(Topic.G1Win, Char(10)))} chars={Len(Topic.G1Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g1
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G1FxAll)), "NONE", Topic.G1FxAll)
+          result: =If(IsBlank(Trim(Topic.G1Win)), "NONE", Topic.G1Win)
 
       output:
         binding:
@@ -707,11 +749,49 @@ beginDialog:
           Char(10)
         )
 
+    - kind: SetVariable
+      id: set_g2_win
+      variable: Topic.G2Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G2FxAll, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g2_win
+      activity: G2 WIN lines={CountRows(Split(Topic.G2Win, Char(10)))} chars={Len(Topic.G2Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g2
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G2FxAll)), "NONE", Topic.G2FxAll)
+          result: =If(IsBlank(Trim(Topic.G2Win)), "NONE", Topic.G2Win)
 
       output:
         binding:
@@ -1163,11 +1243,49 @@ beginDialog:
           Char(10)
         )
 
+    - kind: SetVariable
+      id: set_g3_win
+      variable: Topic.G3Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G3FxAll, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g3_win
+      activity: G3 WIN lines={CountRows(Split(Topic.G3Win, Char(10)))} chars={Len(Topic.G3Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g3
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G3FxAll)), "NONE", Topic.G3FxAll)
+          result: =If(IsBlank(Trim(Topic.G3Win)), "NONE", Topic.G3Win)
 
       output:
         binding:
@@ -1280,11 +1398,49 @@ beginDialog:
       id: dbg_p4a1_head
       activity: "P4A1 FX HEAD: {Left(Topic.G4a1Fx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4a1_win
+      variable: Topic.G4a1Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4a1Fx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4a1_win
+      activity: P4A1 WIN lines={CountRows(Split(Topic.G4a1Win, Char(10)))} chars={Len(Topic.G4a1Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a1
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4a1Fx)) Or Topic.G4a1Fx = "FXERROR", "NONE", Topic.G4a1Fx)
+          result: =If(IsBlank(Trim(Topic.G4a1Win)), "NONE", Topic.G4a1Win)
 
       output:
         binding:
@@ -1397,11 +1553,49 @@ beginDialog:
       id: dbg_p4a2_head
       activity: "P4A2 FX HEAD: {Left(Topic.G4a2Fx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4a2_win
+      variable: Topic.G4a2Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4a2Fx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4a2_win
+      activity: P4A2 WIN lines={CountRows(Split(Topic.G4a2Win, Char(10)))} chars={Len(Topic.G4a2Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a2
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4a2Fx)) Or Topic.G4a2Fx = "FXERROR", "NONE", Topic.G4a2Fx)
+          result: =If(IsBlank(Trim(Topic.G4a2Win)), "NONE", Topic.G4a2Win)
 
       output:
         binding:
@@ -1514,11 +1708,49 @@ beginDialog:
       id: dbg_p4a3_head
       activity: "P4A3 FX HEAD: {Left(Topic.G4a3Fx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4a3_win
+      variable: Topic.G4a3Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4a3Fx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4a3_win
+      activity: P4A3 WIN lines={CountRows(Split(Topic.G4a3Win, Char(10)))} chars={Len(Topic.G4a3Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a3
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4a3Fx)) Or Topic.G4a3Fx = "FXERROR", "NONE", Topic.G4a3Fx)
+          result: =If(IsBlank(Trim(Topic.G4a3Win)), "NONE", Topic.G4a3Win)
 
       output:
         binding:
@@ -1631,11 +1863,49 @@ beginDialog:
       id: dbg_p4a4_head
       activity: "P4A4 FX HEAD: {Left(Topic.G4a4Fx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4a4_win
+      variable: Topic.G4a4Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4a4Fx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4a4_win
+      activity: P4A4 WIN lines={CountRows(Split(Topic.G4a4Win, Char(10)))} chars={Len(Topic.G4a4Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4a4
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4a4Fx)) Or Topic.G4a4Fx = "FXERROR", "NONE", Topic.G4a4Fx)
+          result: =If(IsBlank(Trim(Topic.G4a4Win)), "NONE", Topic.G4a4Win)
 
       output:
         binding:
@@ -1748,11 +2018,49 @@ beginDialog:
       id: dbg_p4b_head
       activity: "P4B FX HEAD: {Left(Topic.G4bFx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4b_win
+      variable: Topic.G4bWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4bFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4b_win
+      activity: P4B WIN lines={CountRows(Split(Topic.G4bWin, Char(10)))} chars={Len(Topic.G4bWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4b
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4bFx)) Or Topic.G4bFx = "FXERROR", "NONE", Topic.G4bFx)
+          result: =If(IsBlank(Trim(Topic.G4bWin)), "NONE", Topic.G4bWin)
 
       output:
         binding:
@@ -1865,11 +2173,49 @@ beginDialog:
       id: dbg_p4c_head
       activity: "P4C FX HEAD: {Left(Topic.G4cFx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4c_win
+      variable: Topic.G4cWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4cFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4c_win
+      activity: P4C WIN lines={CountRows(Split(Topic.G4cWin, Char(10)))} chars={Len(Topic.G4cWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4c
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4cFx)) Or Topic.G4cFx = "FXERROR", "NONE", Topic.G4cFx)
+          result: =If(IsBlank(Trim(Topic.G4cWin)), "NONE", Topic.G4cWin)
 
       output:
         binding:
@@ -1982,11 +2328,49 @@ beginDialog:
       id: dbg_p4d1_head
       activity: "P4D1 FX HEAD: {Left(Topic.G4d1Fx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4d1_win
+      variable: Topic.G4d1Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4d1Fx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4d1_win
+      activity: P4D1 WIN lines={CountRows(Split(Topic.G4d1Win, Char(10)))} chars={Len(Topic.G4d1Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4d1
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4d1Fx)) Or Topic.G4d1Fx = "FXERROR", "NONE", Topic.G4d1Fx)
+          result: =If(IsBlank(Trim(Topic.G4d1Win)), "NONE", Topic.G4d1Win)
 
       output:
         binding:
@@ -2099,11 +2483,49 @@ beginDialog:
       id: dbg_p4d2_head
       activity: "P4D2 FX HEAD: {Left(Topic.G4d2Fx, 600)}"
 
+    - kind: SetVariable
+      id: set_g4d2_win
+      variable: Topic.G4d2Win
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4d2Fx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4d2_win
+      activity: P4D2 WIN lines={CountRows(Split(Topic.G4d2Win, Char(10)))} chars={Len(Topic.G4d2Win)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4d2
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4d2Fx)) Or Topic.G4d2Fx = "FXERROR", "NONE", Topic.G4d2Fx)
+          result: =If(IsBlank(Trim(Topic.G4d2Win)), "NONE", Topic.G4d2Win)
 
       output:
         binding:
@@ -2216,11 +2638,49 @@ beginDialog:
       id: dbg_p4e_head
       activity: "P4E FX HEAD: {Left(Topic.G4eFx, 300)}"
 
+    - kind: SetVariable
+      id: set_g4e_win
+      variable: Topic.G4eWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4eFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4e_win
+      activity: P4E WIN lines={CountRows(Split(Topic.G4eWin, Char(10)))} chars={Len(Topic.G4eWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4e
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4eFx)) Or Topic.G4eFx = "FXERROR", "NONE", Topic.G4eFx)
+          result: =If(IsBlank(Trim(Topic.G4eWin)), "NONE", Topic.G4eWin)
 
       output:
         binding:
@@ -2333,11 +2793,49 @@ beginDialog:
       id: dbg_p4f_head
       activity: "P4F FX HEAD: {Left(Topic.G4fFx, 300)}"
 
+    - kind: SetVariable
+      id: set_g4f_win
+      variable: Topic.G4fWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4fFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4f_win
+      activity: P4F WIN lines={CountRows(Split(Topic.G4fWin, Char(10)))} chars={Len(Topic.G4fWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4f
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4fFx)) Or Topic.G4fFx = "FXERROR", "NONE", Topic.G4fFx)
+          result: =If(IsBlank(Trim(Topic.G4fWin)), "NONE", Topic.G4fWin)
 
       output:
         binding:
@@ -2450,11 +2948,49 @@ beginDialog:
       id: dbg_p4g_head
       activity: "P4G FX HEAD: {Left(Topic.G4gFx, 300)}"
 
+    - kind: SetVariable
+      id: set_g4g_win
+      variable: Topic.G4gWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4gFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4g_win
+      activity: P4G WIN lines={CountRows(Split(Topic.G4gWin, Char(10)))} chars={Len(Topic.G4gWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4g
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4gFx)) Or Topic.G4gFx = "FXERROR", "NONE", Topic.G4gFx)
+          result: =If(IsBlank(Trim(Topic.G4gWin)), "NONE", Topic.G4gWin)
 
       output:
         binding:
@@ -2567,11 +3103,49 @@ beginDialog:
       id: dbg_p4h_head
       activity: "P4H FX HEAD: {Left(Topic.G4hFx, 300)}"
 
+    - kind: SetVariable
+      id: set_g4h_win
+      variable: Topic.G4hWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4hFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4h_win
+      activity: P4H WIN lines={CountRows(Split(Topic.G4hWin, Char(10)))} chars={Len(Topic.G4hWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4h
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4hFx)) Or Topic.G4hFx = "FXERROR", "NONE", Topic.G4hFx)
+          result: =If(IsBlank(Trim(Topic.G4hWin)), "NONE", Topic.G4hWin)
 
       output:
         binding:
@@ -2684,11 +3258,49 @@ beginDialog:
       id: dbg_p4i_head
       activity: "P4I FX HEAD: {Left(Topic.G4iFx, 300)}"
 
+    - kind: SetVariable
+      id: set_g4i_win
+      variable: Topic.G4iWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4iFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4i_win
+      activity: P4I WIN lines={CountRows(Split(Topic.G4iWin, Char(10)))} chars={Len(Topic.G4iWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4i
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4iFx)) Or Topic.G4iFx = "FXERROR", "NONE", Topic.G4iFx)
+          result: =If(IsBlank(Trim(Topic.G4iWin)), "NONE", Topic.G4iWin)
 
       output:
         binding:
@@ -2801,11 +3413,49 @@ beginDialog:
       id: dbg_p4k_head
       activity: "P4K FX HEAD: {Left(Topic.G4kFx, 300)}"
 
+    - kind: SetVariable
+      id: set_g4k_win
+      variable: Topic.G4kWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4kFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4k_win
+      activity: P4K WIN lines={CountRows(Split(Topic.G4kWin, Char(10)))} chars={Len(Topic.G4kWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4k
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4kFx)) Or Topic.G4kFx = "FXERROR", "NONE", Topic.G4kFx)
+          result: =If(IsBlank(Trim(Topic.G4kWin)), "NONE", Topic.G4kWin)
 
       output:
         binding:
@@ -2918,11 +3568,49 @@ beginDialog:
       id: dbg_p4l_head
       activity: "P4L FX HEAD: {Left(Topic.G4lFx, 300)}"
 
+    - kind: SetVariable
+      id: set_g4l_win
+      variable: Topic.G4lWin
+      value: |-
+        =Concat(
+          Filter(
+            Split(Topic.G4lFx, Char(10)),
+            IfError(
+              CountRows(Split(ThisRecord.Value, "|")) >= 4
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) >= Topic.WindowStartNum
+              And Value(
+                    Substitute(
+                      Substitute(
+                        Substitute(
+                          Trim(Last(FirstN(Split(ThisRecord.Value, "|"), 3)).Value),
+                          "-", ""),
+                        ":", ""),
+                      " ", "")
+                  ) < Topic.WindowEndNum,
+              false
+            )
+          ),
+          Value,
+          Char(10)
+        )
+
+    - kind: SendActivity
+      id: dbg_g4l_win
+      activity: P4L WIN lines={CountRows(Split(Topic.G4lWin, Char(10)))} chars={Len(Topic.G4lWin)}
+
     - kind: InvokeAIBuilderModelAction
       id: classify_g4l
       input:
         binding:
-          result: =If(IsBlank(Trim(Topic.G4lFx)) Or Topic.G4lFx = "FXERROR", "NONE", Topic.G4lFx)
+          result: =If(IsBlank(Trim(Topic.G4lWin)), "NONE", Topic.G4lWin)
 
       output:
         binding:
@@ -3032,11 +3720,64 @@ beginDialog:
       id: debug_shortlist
       activity: "POST-WINDOW LEN: {Len(Topic.Shortlist)}"
 
+    - kind: SetVariable
+      id: set_promo_filtered
+      variable: Topic.PromoFiltered
+      value: |-
+        =IfError(
+          Concat(
+            Filter(
+              Split(Topic.Shortlist, Char(10)),
+              !IsBlank(Trim(ThisRecord.Value))
+              And (
+                Find("Mox", ThisRecord.Value) > 0
+                Or Find("MOX", ThisRecord.Value) > 0
+                Or !(
+                Find("優惠碼", ThisRecord.Value) > 0
+                Or Find("折扣碼", ThisRecord.Value) > 0
+                Or Find("/videos/", ThisRecord.Value) > 0
+                Or Find("/video/", ThisRecord.Value) > 0
+                )
+              )
+            ),
+            Value,
+            Char(10)
+          ),
+          Topic.Shortlist
+        )
+
+    - kind: SetVariable
+      id: set_promo_removed
+      variable: Topic.PromoRemoved
+      value: |-
+        =IfError(
+          Concat(
+            Filter(
+              Split(Topic.Shortlist, Char(10)),
+              !IsBlank(Trim(ThisRecord.Value))
+              And !(Find("Mox", ThisRecord.Value) > 0 Or Find("MOX", ThisRecord.Value) > 0)
+              And (
+                Find("優惠碼", ThisRecord.Value) > 0
+                Or Find("折扣碼", ThisRecord.Value) > 0
+                Or Find("/videos/", ThisRecord.Value) > 0
+                Or Find("/video/", ThisRecord.Value) > 0
+              )
+            ),
+            Value,
+            Char(10)
+          ),
+          ""
+        )
+
+    - kind: SendActivity
+      id: dbg_promo
+      activity: "PROMO REMOVED: {Topic.PromoRemoved}"
+
     - kind: InvokeAIBuilderModelAction
       id: sort_all
       input:
         binding:
-          Input: =Topic.Shortlist
+          Input: =Topic.PromoFiltered
 
       output:
         binding:
@@ -3091,6 +3832,10 @@ beginDialog:
           ),
           Topic.Sorted.text
         )
+
+    - kind: SendActivity
+      id: dbg_runend
+      activity: RUN END {IfError(Text(Now(), "yyyy-mm-dd hh:mm:ss"), "NA")}
 
     - kind: SendActivity
       id: send_result
